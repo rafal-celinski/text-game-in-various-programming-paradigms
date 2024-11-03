@@ -23,13 +23,13 @@ use(admin_terminal).
 use(v2_access_card, terminal).
 % odblokowuje dostęp do nawigacji
 
-use(ak_47, aliens)
+use(ak_47, aliens).
 % zabija (zamienia w martwych)
 
 use(fuel, tank).
 %tankuje zbiornik
 
-use(v1_access_card, admin_terminal)
+use(v1_access_card, admin_terminal).
     %sprawdza czy jest wynik z medbay i generuje v2 karte
 
 use(yellow_coat).

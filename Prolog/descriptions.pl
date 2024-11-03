@@ -61,14 +61,29 @@ The research ship Nova Explorer sets out in search of exotic life forms and reso
 However, during the mission, everything goes horribly wrong. 
 An alien life form encountered in deep space becames a grave threat to the crew. 
 Without warning, the team was attacked, plunging the ship into chaos. 
-Now, with systems failing and the lives of your companions at stake, you must find a way to escape.
+Now, with systems failing and the lives of your companions at stake, you must find a way to eliminate problem.
 
 Before the attack, the ship''s captain briefed you on the emergency protocols. 
-To reach the navigation room, a safe evacuation point, you must first obtain a higher-level access card 
-to unlock the armory, where weapons are stored. 
-To acquire this card, you need to gather critical medical research data from the medbay to enhance your access privileges. 
+To reach the navigation room - a safe point, or armory where weapons are stored you must first obtain a higher-level access card.
+To acquire this card, you need to gather critical medical research data about yourself from the medbay.
+With that and v1_accress_card you need to head to admin room to enhance your access privileges. 
 Unfortunately, the rest of the crew is either dead or trapped in the navigation room with no way to escape. 
 It’s up to you to confront the aliens and eliminate the threat to your survival. 
-Your choices will determine not only your fate but also the possibility of saving your remaining crewmates').
+Your ultimate goal is to eliminate the threat, cleanse the ship from potential contamination and free the rest of the crew'), nl.
+
+describe(controls):-
+write('Controls'), nl,
+write('To see this message again write ''describe(controls)''.'), nl,
+write('look - let''s you look around the room you are currently in and see potential ways to interact with environment'), nl,
+write('goto(Place) - use it to move around the ship'), nl,
+write('take(Item) - pick up an item'), nl,
+write('inventory - list items you currently posses'), nl,
+write('drop(Item) - if you don''t like something you can drop it'), nl,
+write('use(Item, Target) - you can use some of the items to accomplish many things'), nl,
+write('use(Item) - use items that don''t have specific target'), nl,
+write('For better understanding of the last two commands we will look at the example below'), nl,
+write('If you want to destroy the door with the bat you should write use(bat, door) but if you wanted to turn on the flashlight you would write use(flashlight)'), nl,
+write('Simple, right?').
+
 
 write_lock_reason(_):- write('This room is locked.'), nl.

@@ -1,5 +1,5 @@
-:- dynamic player_position/1, item_at/2, holding/1.
-:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)).
+:- dynamic player_position/1, item_at/2, holding/1, object_at/2.
+:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)).
 
 
 player_position(reactor).
@@ -12,7 +12,9 @@ player_position(reactor).
 
 
 start :-
-    describe(plot).
+    describe(plot),
+    nl,
+    describe(controls).
 
 
 
@@ -43,6 +45,9 @@ look :-
     nl,
     notice_paths_at(Place),
     nl, !.
+
+
+
 
 
 notice_items_at(Place) :-
