@@ -71,6 +71,41 @@ Unfortunately, the rest of the crew is either dead or trapped in the navigation 
 It’s up to you to confront the aliens and eliminate the threat to your survival. 
 Your ultimate goal is to eliminate the threat, cleanse the ship from potential contamination and free the rest of the crew'), nl.
 
+describe(cameras_aliens_alive):-
+    write('You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'), nl,
+    write('In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'), nl,
+    write('...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'), nl,
+    write('The camera feed in the shields room shows another one of these impostors prowling near the shield generators, its form disturbingly familiar.'), nl,
+    write('Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'), nl,
+    write('The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'), nl,
+    write('In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'), nl.
+
+describe(cameras_alines_cafeteria):-
+    write('You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'), nl,
+    write('The camera feed in the shields room shows one of the aliens prowling near the shield generators, its form disturbingly familiar.'), nl,
+    write('Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'), nl,
+    write('The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'), nl,
+    write('In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'), nl.
+
+
+describe(cameras_aliens_shields):-
+    write('You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'), nl,
+    write('In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'), nl,
+    write('...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'), nl,
+    write('Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'), nl,
+    write('The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'), nl,
+    write('In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'), nl.
+
+
+describe(cameras_no_aliens):-
+    write('The camera feeds flicker to life, displaying a quiet stillness that has returned to the ship.'), nl,
+    write('The cafeteria sits empty, tables undisturbed and lights humming softly.'), nl,
+    write('A calm has settled over the corridors, where only the gentle pulsing of the ship’s systems remains.'), nl,
+    write('For a moment, there’s a strange sense of peace... until a faint electric crackle disrupts the silence.'), nl,
+    write('The screens flicker one last time, then slowly fade to black. Whatever happened here, it’s finally over.'), nl.
+
+
+
 describe(controls):-
 write('Controls'), nl,
 write('To see this message again write ''describe(controls)''.'), nl,
@@ -80,7 +115,7 @@ write('take(Item) - pick up an item'), nl,
 write('inventory - list items you currently posses'), nl,
 write('drop(Item) - if you don''t like something you can drop it'), nl,
 write('use(Item, Target) - you can use some of the items to accomplish many things'), nl,
-write('use(Item) - use items that don''t have specific target'), nl,
+write('use(Item/Object) - use things that don''t have specific target'), nl,
 write('For better understanding of the last two commands we will look at the example below'), nl,
 write('If you want to destroy the door with the bat you should write use(bat, door) but if you wanted to turn on the flashlight you would write use(flashlight)'), nl,
 write('Simple, right?').
