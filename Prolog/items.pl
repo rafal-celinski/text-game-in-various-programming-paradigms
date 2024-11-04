@@ -5,19 +5,24 @@ object_at(admin, admin_terminal).
 object_at(shields, terminal).
 object_at(cafeteria, aliens).
 object_at(shields, aliens).
-object_at(lower_engine, tank).
-object_at(upper_engine, tank).
+object_at(lower_engine, petrol_engine).
+object_at(upper_engine, gas_engine).
 object_at(security, cameras).
+object_at(electrical, power_breaker).
 
 
 item_at(medbay, encyklopedia).
 item_at(weapons, ak_47).
 item_at(storage, plushie).
+item_at(storage, empty_canister).
 item_at(storage, brand_new_1995_Pokémon_Limited_Edition_Holographic_Charizard_Card_1st_Edition_Base_Set_with_Gem_Mint_PSA_10_Grading_and_Original_Packaging).
-item_at(storage, pen).
+item_at(storage, empty_canister).
+item_at(storage, petrol_canister).
+item_at(storage, empty_canister).
 item_at(storage, rope).
 item_at(storage, carton).
-item_at(storage, fuel).
+item_at(storage, lightbulbs).
+item_at(storage, gas_canister).
 item_at(storage, fuel).
 item_at(reactor, v1_access_card).
 item_at(electrical, wrench).

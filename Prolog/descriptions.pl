@@ -121,4 +121,8 @@ write('If you want to destroy the door with the bat you should write use(bat, do
 write('Simple, right?').
 
 
-write_lock_reason(_):- write('This room is locked.'), nl.
+write_lock_reason(electrical):-
+    write('You try to open the door to the electrical room, but it doesn’t budge.'), nl,
+    write('A warning on the control panel reads: "Refuel both engines to stabilize power distribution."'), nl,
+    write('It seems that the electrical room’s power systems are reliant on fully fueled engines.'), nl,
+    write('And once again you must think of something. Where could the spare fuel be stored?'), nl.

@@ -16,5 +16,12 @@ next_to(navigation, shields).
 path(X, Y) :- next_to(Y, X).
 path(X, Y) :- next_to(X, Y).
 
-unlocked_room(_).
+unlocked_room(reactor).
+unlocked_room(upper_engine).
+unlocked_room(lower_engine).
+unlocked_room(security).
+unlocked_room(medbay).
+unlocked_room(cafeteria).
+unlocked_room(storage).
+
 

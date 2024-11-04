@@ -1,5 +1,5 @@
-:- dynamic player_position/1, item_at/2, holding/1, object_at/2, used/1.
-:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)), retractall(used(_)).
+:- dynamic player_position/1, item_at/2, holding/1, object_at/2, used/1, unlocked/1, unlocked_room/1.
+:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)), retractall(used(_)), retractall(unlocked(_)), retractall(unlocked_room(_)).
 
 
 player_position(reactor).
@@ -17,7 +17,6 @@ start :-
     describe(controls).
 
 
-
 goto(Destination) :-
     player_position(Source),
     path(Source, Destination),
@@ -30,10 +29,10 @@ goto(Destination) :-
 goto(Destination) :-
     player_position(Source),
     path(Source, Destination),
-    write_lock_reason(Destination).
+    write_lock_reason(Destination), !, nl.
 
 goto(_) :-
-        write('You can''t go that way.').
+        write('You can''t go that way.'), !, nl.
 
 look :-       
     player_position(Place),
