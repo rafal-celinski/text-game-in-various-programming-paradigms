@@ -157,6 +157,44 @@ describe(petrol_engine) :-
 describe(cant_do_that) :-
     write('You can''t do that'), nl.
 
+describe(medical_report) :-
+    write('MEDICAL REPORT'), nl,
+    write('--------------'), nl,
+    write('Date: 06.04.2124'), nl, nl,
+    write('The examined entity is a human.'), nl, nl,
+    write('Valid only with v1_access_card.'), nl.
+
+describe(admin_panel) :-
+    write('In front of you is the administration panel, the crew management center on the spaceship.'), nl,
+    write('This is where you coordinate the activities of individual crew members,'), nl,
+    write('assign tasks, monitor their health and morale, ensuring that everyone knows their place and role in this interstellar journey.'), nl,
+    write('To use it, you need to authenticate using your access_card.'), nl.
+
+describe(admin_panel_unlocked) :-
+    write('Your access card hums softly as it validates your credentials, granting you a fleeting moment of control.'), nl,
+    write('With the system poised for your commands, you can execute one critical operation before the terminal locks out once more.'), nl.
+
+describe(admin_panel_crew_status) :-
+    write('The administrative panel displays alarming data: two crew members are deceased, while four survivors sit in the navigation room,'), nl,
+    write('their stress levels visibly elevated. The emergency mode is active, and the crew''s health indicators flash red, signaling a critical situation.'), nl,
+    write('The activity log shows their recent attempts at coordination'), nl.
+
+describe(admin_panel_medical_report) :- 
+    write('Your medical report flashes on the screen, confirming that you are indeed human.'), nl,
+    write('As the information sinks in, a new message appears, offering a glimmer of hope.'), nl,
+    write('In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.'), nl.
+
+describe(admin_panel_medical_report_v2_card) :- 
+    write('You already have your v2_access_card'), nl,
+    write('You don''t need another one'), nl.
+
+describe(admin_panel_medical_report_no_card) :- 
+    write('You need the access card for the medical report to be valid'), nl.
+
+describe(admin_panel_medical_report_locked) :-
+    write('Before use admin panel, you need to authenticate using your access_card'), nl,
+    write('Just bring it close to the panel'), nl.
+
 write_lock_reason(electrical):-
     write('You try to open the door to the electrical room, but it doesn’t budge.'), nl,
     write('A warning on the control panel reads: "Refuel both engines to stabilize power distribution."'), nl,

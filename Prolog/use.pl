@@ -15,7 +15,7 @@ use(petrol_canister, petrol_engine) :-
     holding(petrol_canister),
     assert(unlocked(petrol_engine)),
     retract(holding(petrol_canister)),
-    describe(petrol_engine_full), !, nl.
+    describe(petrol_engine_full), !, nl,
     check_engine_status.
 
 % > medbay
@@ -23,6 +23,50 @@ use(petrol_canister, petrol_engine) :-
 % > electrical
 % > cafeteria
 % > admin
+use(v1_access_card, admin_panel) :-
+    player_position(admin),
+    holding(v1_access_card),
+    assert(unlocked(admin_panel)),
+    describe(admin_panel_unlocked), !, nl.
+
+use(v2_access_card, admin_panel) :-
+    player_position(admin),
+    holding(v2_access_card),
+    assert(unlocked(admin_panel)),
+    describe(admin_panel_unlocked), !, nl.
+
+use(medical_report, admin_panel) :-
+    player_position(admin),
+    unlocked(admin_panel),
+    holding(medical_report),
+    holding(v2_access_card),
+    retract(unlocked(admin_panel)),
+    describe(admin_panel_medical_report_v2_card), !, nl.
+
+use(medical_report, admin_panel) :-
+    player_position(admin),
+    unlocked(admin_panel),
+    holding(medical_report),
+    holding(v1_access_card),
+    retract(unlocked(admin_panel)),
+    retract(holding(v1_access_card)),
+    assert(holding(v2_access_card)),
+    describe(admin_panel_medical_report), !, nl.
+
+use(medical_report, admin_panel) :-
+    player_position(admin),
+    unlocked(admin_panel),
+    holding(medical_report),
+    retract(unlocked(admin_panel)),
+    describe(admin_panel_medical_report_no_card), !, nl.
+
+use(medical_report, admin_panel) :-
+    player_position(admin),
+    describe(admin_panel_medical_report_locked), !, nl.
+
+use(_, _) :-
+    describe(cant_do_that), !, nl.
+
 % > storage
 % > weapons
 % > oxygen
@@ -141,6 +185,15 @@ use(power_breaker) :-
 
 % > cafeteria
 % > admin
+use(admin_panel) :-
+    player_position(admin),
+    unlocked(admin_panel),
+    retract(unlocked(admin_panel)),
+    describe(admin_panel_crew_status), !, nl.
+
+use(admin_panel) :-
+    player_position(admin),
+    describe(admin_panel), !, nl.
 % > storage
 % > weapons
 % > oxygen
@@ -148,6 +201,9 @@ use(power_breaker) :-
 % > navigation
 
 % >> use(Item) <<
+use(medical_report) :-
+    holding(medical_report),
+    describe(medical_report), !, nl.
 
 use(encyklopedia) :-
     holding(encyklopedia),
@@ -209,8 +265,7 @@ use(shotgun, blinded_aliens) :-
 use(_) :-
     describe(cant_do_that), !, nl.
 
-use(_, _) :-
-    describe(cant_do_that), !, nl.
+
 
 
 
@@ -249,34 +304,19 @@ check_blinded_aliens :-
     ), !.
 
 
- % TODO TODO TODO TODO
-todo :-
-    write('TODO'), !, nl.
+%  % TODO TODO TODO TODO
+% todo :-
+%     write('TODO'), !, nl.
 
-use(secret_stash) :- todo, !.
-% dostajesz ak-47
+% use(secret_stash) :- todo, !.
+% % dostajesz ak-47
 
-use(wrench, broken_pipe) :- todo, !.
-%naprawia rure
+% use(wrench, broken_pipe) :- todo, !.
+% %naprawia rure
 
-use(broken_pipe) :- todo, !.
-% info o rurze
+% use(broken_pipe) :- todo, !.
+% % info o rurze
 
-
-use(admin_terminal) :- todo, !.
-%jeśli zabci alieni to czysci statek
-
-use(v2_access_card, terminal) :- todo, !.
-% odblokowuje dostęp do nawigacji
-
-
-use(v1_access_card, admin_terminal) :- todo, !.
-    %sprawdza czy jest wynik z medbay i generuje v2 karte
-
-
-
-
-
-
-
+% use(encyklopedia) :- todo, !.
+% % czytasz encyklopenie
 

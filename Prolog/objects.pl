@@ -21,7 +21,7 @@ object_at(electrical, power_breaker).
 object_at(cafeteria, aliens).
 
 % > admin
-object_at(admin, admin_terminal).
+object_at(admin, admin_panel).
 
 % > storage
 
