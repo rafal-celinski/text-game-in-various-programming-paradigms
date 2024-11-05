@@ -1,5 +1,5 @@
-:- dynamic player_position/1, item_at/2, holding/1, object_at/2, used/1, unlocked/1, unlocked_room/1.
-:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)), retractall(used(_)), retractall(unlocked(_)), retractall(unlocked_room(_)).
+:- dynamic player_position/1, item_at/2, holding/1, object_at/2, used/1, unlocked/1, unlocked_room/1, player_before/1.
+:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)), retractall(used(_)), retractall(unlocked(_)), retractall(unlocked_room(_)), retractall(player_before(_)).
 
 :- ['rooms.pl'].
 :- ['descriptions.pl'].
@@ -14,14 +14,52 @@ start :-
     describe(controls), nl.
 
 
+run :-
+    player_position(Place),
+    object_at(Place, aliens),
+    player_before(Before), !,
+    retract(player_position(Place)),
+    assert(player_position(Before)),
+    retract(player_before(_)),
+    write('You are in '), write(Before), write('.'),
+    nl.
+
+run :-
+    write('No need to run'), nl.
+
+
+goto(Destination) :-
+    player_position(Source),
+    object_at(Source, aliens), !,
+    write('You can''t go anywhere! Run for your life or fight for it!'), nl.
+
+
+goto(Destination) :-
+    player_position(Source),
+    object_at(Destination, aliens),
+    path(Source, Destination),
+    unlocked_room(Destination),
+    retract(player_position(Source)),
+    assert(player_position(Destination)),
+    retractall(player_before(_)),
+    assert(player_before(Source)),
+    !, write('You are in '), write(Destination), write('.'), nl,
+    describe(aliens),
+    check_flashlight,
+    check_shotgun,
+    write('You can use ''run'' to escape to where from you came'), nl.
+
+
 goto(Destination) :-
     player_position(Source),
     path(Source, Destination),
     unlocked_room(Destination),
     retract(player_position(Source)),
-    assert(player_position(Destination)), !, 
-    write('You are in '), write(Destination), write('.'),
-    nl.
+    assert(player_position(Destination)),
+    !, write('You are in '), write(Destination), write('.'),
+    nl,
+    check_blinded_aliens.
+
 
 goto(Destination) :-
     player_position(Source),
@@ -33,14 +71,18 @@ goto(_) :-
 
 look :-       
     player_position(Place),
-    describe(Place),
-    nl,
-    notice_objects_at(Place),
-    nl,
-    notice_items_at(Place),
-    nl,
-    notice_paths_at(Place),
-    nl, !.
+    ( object_at(Place, aliens) ->
+        write('It''s not the time for sightseeing!'), nl
+    ;   
+        describe(Place),
+        nl,
+        notice_objects_at(Place),
+        nl,
+        notice_items_at(Place),
+        nl,
+        notice_paths_at(Place),
+        nl, !
+    ).
 
 
 notice_items_at(Place) :-
