@@ -23,5 +23,3 @@ unlocked_room(security).
 unlocked_room(medbay).
 unlocked_room(cafeteria).
 unlocked_room(storage).
-
-

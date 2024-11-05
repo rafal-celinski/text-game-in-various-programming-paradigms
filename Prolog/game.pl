@@ -1,20 +1,17 @@
 :- dynamic player_position/1, item_at/2, holding/1, object_at/2, used/1, unlocked/1, unlocked_room/1.
 :- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)), retractall(used(_)), retractall(unlocked(_)), retractall(unlocked_room(_)).
 
+:- ['rooms.pl'].
+:- ['descriptions.pl'].
+:- ['items.pl'].
+:- ['objects.pl'].
+:- ['use.pl'].
 
 player_position(reactor).
 
-:- ['paths.pl'].
-:- ['descriptions.pl'].
-:- ['items.pl'].
-:- ['interakcje.pl'].
-
-
-
 start :-
-    describe(plot),
-    nl,
-    describe(controls).
+    describe(plot), nl,
+    describe(controls), nl.
 
 
 goto(Destination) :-
@@ -22,8 +19,8 @@ goto(Destination) :-
     path(Source, Destination),
     unlocked_room(Destination),
     retract(player_position(Source)),
-    assert(player_position(Destination)),
-    !, write('You are in '), write(Destination), write('.'),
+    assert(player_position(Destination)), !, 
+    write('You are in '), write(Destination), write('.'),
     nl.
 
 goto(Destination) :-
@@ -107,3 +104,6 @@ inventory :-
     fail.
 
 inventory.
+
+controls :-
+    describe(controls), !, nl.
