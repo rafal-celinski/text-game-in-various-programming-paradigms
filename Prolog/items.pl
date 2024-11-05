@@ -26,4 +26,4 @@ item_at(storage, gas_canister).
 item_at(storage, fuel).
 item_at(reactor, v1_access_card).
 item_at(electrical, wrench).
-item_at(security, yellow_coat).
+item_at(security, flashlight).

@@ -126,3 +126,12 @@ write_lock_reason(electrical):-
     write('A warning on the control panel reads: "Refuel both engines to stabilize power distribution."'), nl,
     write('It seems that the electrical room’s power systems are reliant on fully fueled engines.'), nl,
     write('And once again you must think of something. Where could the spare fuel be stored?'), nl.
+
+
+describe(aliens):-
+    write('You step into the dimly lit room, and a chill immediately runs down your spine.'), nl,
+    write('Figures stand scattered across the room, moving with a strange, unnatural grace. At first glance, they look like members of your crew.'), nl,
+    write('But as they turn toward you, you notice their eyes: empty, hollow, and unblinking, devoid of any humanity.'), nl,
+    write('Their movements are jerky, almost as if they’re struggling to control the forms they’ve taken.'), nl,
+    write('A faint, low hiss fills the air as they begin to advance, recognizing you as an outsider.'), nl,
+    write('If you are not prepared - prepare to run for your life!'), nl.
