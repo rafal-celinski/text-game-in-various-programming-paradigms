@@ -9,9 +9,17 @@
 
 player_position(reactor).
 
+talk :-
+    player_position(navigation),
+    describe(ending_scene), !.
+
+talk :-
+    describe(insanity), !.
+
 start :-
     describe(plot), nl,
     describe(controls), nl.
+
 
 
 run :-
@@ -44,7 +52,7 @@ goto(Destination) :-
     retractall(player_before(_)),
     assert(player_before(Source)),
     !, write('You are in '), write(Destination), write('.'), nl,
-    describe(aliens),
+    describe_aliens(Destination),
     check_flashlight,
     check_shotgun,
     write('You can use ''run'' to escape to where from you came'), nl.
@@ -126,6 +134,8 @@ take(Item) :-
 take(_) :-
         write('I don''t see it here.'),
         nl.
+
+
 
 drop(Item) :-
         holding(Item),

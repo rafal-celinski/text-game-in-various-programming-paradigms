@@ -1,6 +1,7 @@
 %  >> items <<
 % > upper_engine
 % > reactor
+
 item_at(reactor, v1_access_card).
 
 % > lower_engine
@@ -8,7 +9,7 @@ item_at(reactor, v1_access_card).
 item_at(medbay, encyklopedia).
 
 % > security
-item_at(security, yellow_coat).
+item_at(security, flashlight).
 
 % > electrical
 item_at(electrical, wrench).
@@ -29,7 +30,7 @@ item_at(storage, gas_canister).
 item_at(storage, fuel).
 
 % > weapons
-item_at(weapons, ak_47).
+item_at(weapons, shotgun).
 
 % > oxygen
 % > shields

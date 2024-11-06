@@ -38,9 +38,12 @@ describe(oxygen) :-
     write('The oxygen room houses the life support systems, vital for air circulation.'), nl,
     write('There’s a soft whirring of fans, but a warning light flashes ominously.'), nl.
 
-describe(navigation) :- 
-    write('The navigation room is lined with monitors displaying star charts and coordinates.'), nl,
-    write('This is the heart of the ship’s control, a safe point in times of emergency.'), nl.
+describe(navigation) :-
+    write('The navigation room is lined with monitors displaying star charts and coordinates, softly glowing in the dim light.'), nl,
+    write('This is the heart of the ship’s control, a designated safe point in times of emergency.'), nl,
+    write('The remaining crew members look up as you enter, their eyes heavy with exhaustion but filled with relief.'), nl,
+    write('They offer tired smiles, grateful that the ordeal is finally over, and a calm settles over the room as everyone regains a sense of safety.'), nl,
+    write('You can talk to them using `talk`'), n1.
 
 describe(shields) :- 
     write('Shield generators hum softly here, their power keeping the ship protected in space.'), nl,
@@ -182,7 +185,11 @@ describe(admin_panel_crew_status) :-
 describe(admin_panel_medical_report) :- 
     write('Your medical report flashes on the screen, confirming that you are indeed human.'), nl,
     write('As the information sinks in, a new message appears, offering a glimmer of hope.'), nl,
-    write('In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.'), nl.
+    write('In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.'), nl,
+    write('As you obtain the higher-level access card, an alarm suddenly blares through the ship.'), nl,
+    write('"Warning! Oxygen levels critical. Immediate repair needed to maintain safe breathing conditions."'), nl,
+    write('The system message echoes ominously, sending a chill down your spine.'), nl, nl,
+    write('To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy...'), nl.
 
 describe(admin_panel_medical_report_v2_card) :- 
     write('You already have your v2_access_card'), nl,
@@ -201,11 +208,88 @@ write_lock_reason(electrical):-
     write('It seems that the electrical room’s power systems are reliant on fully fueled engines.'), nl,
     write('And once again you must think of something. Where could the spare fuel be stored?'), nl.
 
+write_lock_reason(weapons):-
+    write('You need v2_access_card to access this room'), nl.
 
-describe(aliens):-
+write_lock_reason(shields):-
+    write('You need v2_access_card to access this room'), nl.
+
+write_lock_reason(oxygen):-
+    write('You need v2_access_card to access this room'), nl.
+
+write_lock_reason(navigation):-
+    write('You need to eliminate every threat on the ship to open this door'),
+    write('Don''t forget about v2_access_card. Without it system won''t let you in.'), nl.
+
+describe_aliens(cafeteria):-
     write('You step into the dimly lit room, and a chill immediately runs down your spine.'), nl,
     write('Figures stand scattered across the room, moving with a strange, unnatural grace. At first glance, they look like members of your crew.'), nl,
     write('But as they turn toward you, you notice their eyes: empty, hollow, and unblinking, devoid of any humanity.'), nl,
     write('Their movements are jerky, almost as if they’re struggling to control the forms they’ve taken.'), nl,
     write('A faint, low hiss fills the air as they begin to advance, recognizing you as an outsider.'), nl,
     write('If you are not prepared - prepare to run for your life!'), nl.
+
+describe(flashlight):-
+     write('You don''t know how long will the battery keep up but the light could easily blind someone'), !, nl.
+
+describe(encyklopedia):-
+    write('You open the worn pages of the encyclopedia, flipping through information on various alien species.'), nl,
+    write('One entry catches your attention: it describes a species known for its shape-shifting abilities and hostile nature.'), nl,
+    write('A critical line reads: "Though formidable, this species has one weakness—intense, direct light can disorient or even harm it."'), nl,
+    write('Maybe bringing flashlight to the battelfield wouldn''t be bad idea'), nl.
+
+describe(blind_aliens):-
+    write('You flick on the flashlight, pointing it directly at the alien figures before you.'), nl,
+    write('The intense beam pierces through the darkness, and the creatures recoil, their hollow eyes blinking and limbs twitching in confusion.'), nl,
+    write('They stagger back, momentarily stunned and disoriented by the powerful light. It won’t hold them for long, but you have a chance to move or attack while they’re blinded.'), nl.
+
+describe(blind_blinded_aliens):-
+    write('Don''t play with those things, at any moment flashlight can stop working and you stand no chance without it.'), nl.
+
+describe(kill_aliens):-
+    write('You raise the shotgun, heart pounding as you take aim at the alien figures.'), nl,
+    write('With a deafening blast, the shotgun kicks against your shoulder, the recoil intense but satisfying.'), nl,
+    write('The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.'), nl,
+    write('Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings.'), nl.
+
+describe(kill_blinded_aliens):-
+    write('You take advantage of the aliens’ confusion, raising the shotgun with steady hands.'), nl,
+    write('The creatures, disoriented and staggering, barely react as you pull the trigger. The shotgun roars, filling the room with an explosive sound.'), nl,
+    write('The blinded aliens crumple, their strange, distorted forms dropping heavily to the ground, helpless under the onslaught.'), nl,
+    write('As they fall, their true forms begin to seep through the disguise – grotesque, sinewy masses twisted into shapes that vaguely hint at something once living.'), nl,
+    write('All that remains are eerie, unnatural corpses scattered on the floor, a disturbing testament to their failed mimicry of the crew.'), nl.
+
+describe(have_flashlight):-
+    write('You feel the weight of the flashlight in your pocket, its cool metal a reminder of the creatures’ one known weakness.'), nl.
+
+describe(have_shotgun):-
+    write('You grip the shotgun firmly, its weight solid and reassuring in your hands. Whatever these things are, you’re ready.'), nl.
+
+describe_aliens(shields):-
+    write('You step cautiously into the shields room, but freeze as a pair of low, guttural growls emerges from the darkness.'), nl,
+    write('Two alien figures shift in the shadows, their twisted forms barely visible in the dim, flickering lights.'), nl,
+    write('Both turn towards you, hollow eyes reflecting a strange glint as they advance, their movements synchronized and predatory.'), nl,
+    write('You lift whatever you have in hand, desperately hoping to hold them at bay. The aliens hesitate, momentarily recoiling, their limbs twitching as if repelled.'), nl,
+    write('It’s only a brief reprieve, and you can feel the tension building—their hesitation won’t last.'), nl.
+
+describe(broken_pipe):-
+    write('A sturdy metal pipe runs along the wall, but near one of the joints, a crack has started to leak oxygen in faint, rhythmic hisses.'), nl,
+    write('The crack is surrounded by a series of loose bolts and fittings that hold the pipe’s sections together.'), nl,
+    write('With a wrench, you might be able to tighten the joints and secure the connection enough to stop the leak temporarily.'), nl.
+
+describe(repairing_pipe):-
+    write('You position the wrench over the loose bolts near the cracked joint, gripping tightly.'), nl,
+    write('With a few strong turns, you feel the bolts begin to tighten, pulling the pipe’s sections securely together.'), nl,
+    write('The hissing sound gradually fades as the leak closes, and the air in the room feels more stable.'), nl,
+    write('Satisfied with the makeshift repair, you step back, knowing this should hold long enough to restore the oxygen flow.'), nl.
+
+describe(ending_scene) :-
+    write('As they gather in the navigation room, the crew exchanges weary but relieved glances.'), nl,
+    write('One by one, they take turns recounting the harrowing events, voices hushed but tinged with disbelief and gratitude.'), nl,
+    write('They lean in, nodding as each person speaks, sharing quick smiles and soft laughs that cut through the tension.'), nl,
+    write('A faint warmth returns to their expressions, a camaraderie solidified by survival. They stand a little taller, knowing the danger is finally behind them.'), nl, nl,
+    write('Their reaction means one more thing. Your journey with the game ends. Congratulations!'), nl,
+    write('As developers we hope you enjoyed your time here. Have a good one!'), nl.
+
+describe(insanity) :-
+    write('Already talking to yourself?'), nl.

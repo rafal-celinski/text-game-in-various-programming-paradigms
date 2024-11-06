@@ -23,3 +23,15 @@ unlocked_room(security).
 unlocked_room(medbay).
 unlocked_room(cafeteria).
 unlocked_room(storage).
+unlocked_room(admin).
+unlocked_room(weapons) :-
+    holding(v2_access_card).
+unlocked_room(oxygen) :-
+    holding(v2_access_card).
+unlocked_room(shields) :-
+    holding(v2_access_card).
+unlocked_room(navigation) :-
+    holding(v2_access_card),
+    unlocked(oxygen_pipe),
+    object_at(cafeteria, weird_corpses),
+    object_at(shields, weird_corpses).
