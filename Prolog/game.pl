@@ -1,11 +1,29 @@
-:- dynamic player_position/1, item_at/2, holding/1, object_at/2, used/1, unlocked/1, unlocked_room/1, player_before/1.
-:- retractall(player_position(_)), retractall(item_at(_,_)), retractall(holding(_)), retractall(object_at(_,_)), retractall(used(_)), retractall(unlocked(_)), retractall(unlocked_room(_)), retractall(player_before(_)).
+
+:- dynamic 
+    player_position/1, 
+    item_at/2, 
+    holding/1, 
+    object_at/2, 
+    unlocked_room/1, 
+    player_before/1,
+    unlocked_object/1,
+    done/1.
+
+:- 
+    retractall(player_position(_)), 
+    retractall(item_at(_,_)), 
+    retractall(holding(_)), 
+    retractall(object_at(_,_)), 
+    retractall(unlocked_room(_)), 
+    retractall(player_before(_)),
+    retractall(unlocked_object(_)),
+    retractall(done(_)).
 
 :- ['rooms.pl'].
-:- ['descriptions.pl'].
 :- ['items.pl'].
 :- ['objects.pl'].
-:- ['use.pl'].
+:- ['plot.pl'].
+:- ['use_item_on_object.pl'].
 
 player_position(reactor).
 
@@ -36,7 +54,7 @@ run :-
     write('No need to run'), nl.
 
 
-goto(Destination) :-
+goto(_) :-
     player_position(Source),
     object_at(Source, aliens), !,
     write('You can''t go anywhere! Run for your life or fight for it!'), nl.
@@ -82,7 +100,7 @@ look :-
     ( object_at(Place, aliens) ->
         write('It''s not the time for sightseeing!'), nl
     ;   
-        describe(Place),
+        describe_room(Place),
         nl,
         notice_objects_at(Place),
         nl,
@@ -112,7 +130,6 @@ notice_paths_at(_).
 notice_objects_at(Place) :-
     write('Available objects:'), nl,
     object_at(Place, Object),
-    Object \= secret_stash,
     write(' - '), write(Object), write(','), nl,
     fail.
 
@@ -159,3 +176,69 @@ inventory.
 
 controls :-
     describe(controls), !, nl.
+
+
+% use object when unlocked
+use(Object) :-
+    player_position(Place),
+    object_at(Place, Object),
+    unlocked_object(Object),
+    use_object(Object), !.
+
+% use object when locked
+use(Object) :-
+    player_position(Place),
+    object_at(Place, Object),
+    use_locked_object(Object), !.
+
+use(Item) :-
+    holding(Item),
+    use_item(Item), !.
+
+use(_) :-
+    write('You can''t do that'), !, nl.
+
+% use object when unlocked
+use(Item, Object) :-
+    holding(Item),
+    player_position(Place),
+    object_at(Place, Object),
+    unlocked_object(Object),
+    use_item_on_object(Item, Object), !.
+
+% use object when locked
+use(Item, Object) :-
+    holding(Item),
+    player_position(Place),
+    object_at(Place, Object),
+    use_locked_item_on_object(Item, Object), !.
+
+use(_, _) :-
+    write('You can''t do that'), !, nl.
+
+check_blinded_aliens :-
+    (   
+        object_at(Place, blinded_aliens),
+        retract(object_at(Place, blinded_aliens)),
+        assert(object_at(Place, aliens))
+    ;   
+        true
+    ), !.
+
+check_flashlight :-
+    (
+    holding(flashlight),
+    done(encyklopedia),
+    describe(have_flashlight)
+    ;
+        true
+    ), !.
+
+check_shotgun :-
+    (
+    holding(shotgun),
+    describe(have_shotgun)
+    ;
+        true
+    ), !.
+
