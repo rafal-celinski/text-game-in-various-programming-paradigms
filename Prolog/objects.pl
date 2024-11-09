@@ -88,9 +88,9 @@
     unlocked_object(aliens).
 
 % BLIND_ALIENS
-    unlocked_object(blind_aliens).
+    unlocked_object(blinded_aliens).
 
-    describe_object(blind_aliens):-
+    describe_object(blinded_aliens):-
         write('You flick on the flashlight, pointing it directly at the alien figures before you.'), nl,
         write('The intense beam pierces through the darkness, and the creatures recoil, their hollow eyes blinking and limbs twitching in confusion.'), nl,
         write('They stagger back, momentarily stunned and disoriented by the powerful light. It won’t hold them for long, but you have a chance to move or attack while they’re blinded.'), nl.

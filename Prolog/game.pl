@@ -152,6 +152,8 @@ take(_) :-
         write('I don''t see it here.'),
         nl.
 
+drop(v2_access_card) :-
+    write('Don''t do that, you will need it'), nl
 
 
 drop(Item) :-
