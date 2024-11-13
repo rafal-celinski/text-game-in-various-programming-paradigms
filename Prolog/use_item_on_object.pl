@@ -51,6 +51,9 @@ use_item_on_object(medical_report, admin_panel) :-
 
 use_item_on_object(wrench, broken_pipe) :-
     assert(done(oxygen_pipe)),
+    retract(object_at(oxygen, broken_pipe)),
+    assert(unlocked_object(repaired_pipe)),
+    assert(object_at(oxygen, repaired_pipe)),
     describe(repairing_pipe).
 
 check_engine_status :-

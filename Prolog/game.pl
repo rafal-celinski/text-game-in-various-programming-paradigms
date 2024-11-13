@@ -153,7 +153,7 @@ take(_) :-
         nl.
 
 drop(v2_access_card) :-
-    write('Don''t do that, you will need it'), nl
+    write('Don''t do that, you will need it'), !, nl.
 
 
 drop(Item) :-
@@ -165,7 +165,7 @@ drop(Item) :-
         !, nl.
 
 drop(_) :-
-        write('You aren''t holding it!'),
+        write('You aren''t holding it!'), !,
         nl.
 
 inventory :-

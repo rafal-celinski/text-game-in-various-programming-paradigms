@@ -122,6 +122,10 @@
         write('The crack is surrounded by a series of loose bolts and fittings that hold the pipe’s sections together.'), nl,
         write('With a wrench, you might be able to tighten the joints and secure the connection enough to stop the leak temporarily.'), nl.
 
+% REPAIRED_PIPE
+    describe_object(repaired_pipe):-
+        write('Now it looks way better.'), nl.
+
 
 use_object(Object) :-
     describe_object(Object), !, nl.
