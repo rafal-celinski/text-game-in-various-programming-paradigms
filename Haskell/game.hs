@@ -5,11 +5,13 @@ import System.Random (randomRIO)
 
 type Room = String
 type Item = String
+type Object = String
 
 data GameState = GameState {
     currentRoom :: Room,
     holding :: [Item],
-    items :: [(Item, Room)]
+    items :: [(Item, Room)],
+    objects :: [(Object, Room)]
 }
 
 rooms :: [(Room, [Room])]
@@ -51,6 +53,18 @@ initialItems = [
     ("v2 access card", []),
     ("medical raport", [])]
 
+initialObjects :: [(Object, Room)]
+initialObjects = [
+    ("gas engine", "Upper Engine"),
+    ("petrol engine", "Lower Engine"),
+    ("scanner", "Medbay"),
+    ("cameras", "Security"),
+    ("power breaker", "Electrical"),
+    ("aliens", "Shields"),
+    ("aliens", "Cafeteria"),
+    ("admin panel", "Admin"),
+    ("broken pipe", "Oxygen")]
+
 
 randomizeItemLocation :: [(Item, [Room])] -> IO [(Item, Room)]
 randomizeItemLocation [] = return []
@@ -72,7 +86,8 @@ generateGameState = do
     return GameState {
         currentRoom = startRoom,
         holding = [],
-        items = items
+        items = items,
+        objects = initialObjects
     }
 
 move :: Room -> GameState -> GameState
@@ -99,6 +114,9 @@ pick targetItem state = do
     where
         itemsInRoom = [item | (item, room) <- items state, room == currentRoom state]
 
+-- useItem :: Item -> GameState -> IO GameState
+-- useItem
+
 
 readCommand :: IO String
 readCommand = do
@@ -114,11 +132,13 @@ printEnterRoom state = do
     printLines ["You are in: " ++ currentRoom state]
     printLines ["Available rooms: " ++ intercalate(", ") neighbors]
     printLines ["Available items: " ++ intercalate(", ") itemsInRoom]
+    printLines ["Available objects: " ++ intercalate(", ") objectsInRoom]
     where
     neighbors = case lookup (currentRoom state) rooms of
         Just ns -> ns
         Nothing -> []
     itemsInRoom = [item | (item, room) <- items state, room == currentRoom state]
+    objectsInRoom = [object | (object, room) <- objects state, room == currentRoom state]
 
 
 printStartGame :: GameState -> IO ()
@@ -143,6 +163,25 @@ gameLoop state = do
             let item = unwords rest
             newState <- pick item state
             gameLoop newState
+        ("use" : rest) -> case break (== "on") rest of
+            (itemWords, "on" : objectWords) -> do
+                let item = unwords itemWords
+                let object = unwords objectWords
+                printLines["Using " ++ item ++ " on " ++ object, ""]
+                gameLoop state
+            (itemObjectWords, []) -> do
+                let itemObject = unwords itemObjectWords
+                if itemObject `elem` holding state then
+                    printLines["Using item: " ++ itemObject, ""]
+                    gameLoop state
+                else if itemObject `elem` objectsInRoom then
+                    printLines["Using object: " ++ itemObject, ""]
+                    gameLoop state
+                else 
+                    printLines ["Invalid use command", ""]
+                where 
+                    objectsInRoom = [object | (object, room) <- objects state, room == currentRoom state]
+            _ -> printLines ["Invalid use command", ""]
         _ -> do
             printLines ["Unknown command.", ""]
             gameLoop state
