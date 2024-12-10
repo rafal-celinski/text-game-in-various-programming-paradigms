@@ -15,7 +15,8 @@ data GameState = GameState {
     holding :: [Item],
     items :: [(Item, Room)],
     objects :: [(Object, Room, Unlocked)],
-    milestones :: [Milestone]
+    milestones :: [Milestone],
+    roomsStates :: [(Room, Unlocked)]
 }
 
 
@@ -44,6 +45,23 @@ startRooms = [
     "Lower Engine", 
     "Storage", 
     "Upper Engine"]
+
+
+initialRoomsStates :: [(Room, Unlocked)]
+initialRoomsStates = [
+    ("Reactor", True),
+    ("Security", True),
+    ("Medbay", True),
+    ("Lower Engine", True),
+    ("Storage", True),
+    ("Upper Engine", True),
+    ("Electrical", True),
+    ("Shields", True),
+    ("Cafeteria", True),
+    ("Oxygen", True),
+    ("Navigation", True),
+    ("Weapons", True),
+    ("Admin Room", True)]
 
 
 initialItems :: [(Item, [Room])]
@@ -100,9 +118,18 @@ generateGameState = do
         holding = [],
         items = items,
         objects = initialObjects,
-        milestones = []
+        milestones = [],
+        roomsStates = initialRoomsStates
     }
 
+goTo :: Room -> GameState -> IO GameState
+goTo room state = do
+    -- if roomUnlocked 
+    let newState = move room state
+    printEnterRoom newState
+    return newState
+    -- where
+    --     roomUnlocked = head [unlocked | (r, unlocked) <- roomsStates state, r == room]
 
 move :: Room -> GameState -> GameState
 move targetRoom state =
@@ -129,32 +156,24 @@ pick targetItem state = do
         itemsInRoom = [item | (item, room) <- items state, room == currentRoom state]
 
 
-addMilestone :: Milestone -> GameState -> IO GameState
-addMilestone milestone state = do
-    let newState = state {milestones = (milestones state ++ [milestone])}
-    return newState
+addMilestone :: Milestone -> GameState -> GameState
+addMilestone milestone state = state {milestones = (milestones state ++ [milestone])}
 
-addItem :: Item -> GameState -> IO GameState
-addItem item state = do
-    let newState = state {holding = (holding state ++ [item])}
-    return newState
+addItem :: Item -> GameState ->  GameState
+addItem item state = state {holding = (holding state ++ [item])}
 
 objectInRoom :: Object -> Room -> GameState -> Bool
 objectInRoom object room state = object `elem` [obj | (obj, r, _) <- objects state, r == room]
 
 
-setObjectUnlockedInRoom :: Object -> Room -> Unlocked -> GameState -> IO GameState
-setObjectUnlockedInRoom object room unlocked state = do 
-    let newState = state {objects = updatedObjects}
-    return newState
+setObjectUnlockedInRoom :: Object -> Room -> Unlocked -> GameState -> GameState
+setObjectUnlockedInRoom object room unlocked state = state {objects = updatedObjects}
     where
         updatedObjects = [(obj, r, if obj == object && r == room then unlocked else oldUnlocked) | (obj, r, oldUnlocked) <- objects state]
 
 
-setObjectUnlocked :: Object -> Unlocked -> GameState -> IO GameState
-setObjectUnlocked object unlocked state = do
-    let newState = state {objects = updatedObjects}
-    return newState
+setObjectUnlocked :: Object -> Unlocked -> GameState -> GameState
+setObjectUnlocked object unlocked state = state {objects = updatedObjects}
     where
         updatedObjects = [(obj, r, if obj == object then unlocked else oldUnlocked) | (obj, r, oldUnlocked) <- objects state]
         
@@ -181,7 +200,7 @@ useCameras unlocked state = do
             printLines ["You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.", "The camera feed in the shields room shows one of the aliens prowling near the shield generators, its form disturbingly familiar.", "Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.", "The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.", "In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever."]
         else
             printLines["The camera feeds flicker to life, displaying a quiet stillness that has returned to the ship.", "The cafeteria sits empty, tables undisturbed and lights humming softly.", "A calm has settled over the corridors, where only the gentle pulsing of the ship’s systems remains.", "For a moment, there’s a strange sense of peace... until a faint electric crackle disrupts the silence.", "The screens flicker one last time, then slowly fade to black. Whatever happened here, it’s finally over."]
-        newState <- setObjectUnlocked "cameras" False state    
+        let newState = setObjectUnlocked "cameras" False state    
         return newState
     else do
         printLines ["Only thing you can see is your mirrored image on the black screen."]
@@ -198,8 +217,8 @@ useScanner unlocked state = do
             return state
         else do
             printLines ["You have aquired medical report. Go to admin room with v1_access card to upgrade it."]
-            newState <- addMilestone "scanner" state
-            newState <- addItem "medical report" newState
+            let newState = addMilestone "scanner" state
+            let newState = addItem "medical report" newState
             return newState
     else do
         printLines ["The medbay scanner sits dormant, its screen blank and unresponsive due to an electrical shortage.", "Maybe checking electrical room will let you progress. If you recall corectly it was located near lower engines"]
@@ -247,8 +266,7 @@ gameLoop state = do
             gameLoop state
         ("go" : "to" : rest) -> do
             let room = unwords rest
-            let newState = move room state
-            printEnterRoom newState
+            newState <- goTo room state
             gameLoop newState
         ["quit"] -> return ()
         ("pick" : "up" : rest) -> do
