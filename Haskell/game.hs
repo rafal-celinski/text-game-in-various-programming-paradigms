@@ -7,13 +7,15 @@ type Room = String
 type Item = String
 type Object = String
 type Unlocked = Bool
+type Milestone = String
 
 
 data GameState = GameState {
     currentRoom :: Room,
     holding :: [Item],
     items :: [(Item, Room)],
-    objects :: [(Object, Room, Unlocked)]
+    objects :: [(Object, Room, Unlocked)],
+    milestones :: [Milestone]
 }
 
 
@@ -97,7 +99,8 @@ generateGameState = do
         currentRoom = startRoom,
         holding = [],
         items = items,
-        objects = initialObjects
+        objects = initialObjects,
+        milestones = []
     }
 
 
@@ -126,6 +129,16 @@ pick targetItem state = do
         itemsInRoom = [item | (item, room) <- items state, room == currentRoom state]
 
 
+addMilestone :: Milestone -> GameState -> IO GameState
+addMilestone milestone state = do
+    let newState = state {milestones = (milestones state ++ [milestone])}
+    return newState
+
+addItem :: Item -> GameState -> IO GameState
+addItem item state = do
+    let newState = state {holding = (holding state ++ [item])}
+    return newState
+
 objectInRoom :: Object -> Room -> GameState -> Bool
 objectInRoom object room state = object `elem` [obj | (obj, r, _) <- objects state, r == room]
 
@@ -150,6 +163,7 @@ useObject :: Object -> GameState -> IO GameState
 useObject object state = do
     newState <- case object of
         "cameras" -> do useCameras objectUnlocked state
+        "scanner" -> do useScanner objectUnlocked state
         _ -> do printLines ["You can't do that"] >> return state
     return newState
     where
@@ -175,6 +189,21 @@ useCameras unlocked state = do
     where
         aliensInCafeteria = objectInRoom "aliens" "Cafeteria" state
         aliensInShields = objectInRoom "aliens" "Shields" state
+
+useScanner :: Unlocked -> GameState -> IO GameState
+useScanner unlocked state = do
+    if unlocked then do
+        if "scanner" `elem` milestones state then do
+            printLines ["Don''t waste time. You already did that."]
+            return state
+        else do
+            printLines ["You have aquired medical report. Go to admin room with v1_access card to upgrade it."]
+            newState <- addMilestone "scanner" state
+            newState <- addItem "medical report" newState
+            return newState
+    else do
+        printLines ["The medbay scanner sits dormant, its screen blank and unresponsive due to an electrical shortage.", "Maybe checking electrical room will let you progress. If you recall corectly it was located near lower engines"]
+        return state
 
 
 readCommand :: IO String
