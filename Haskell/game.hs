@@ -3,6 +3,7 @@ import System.Random (randomRIO)
 import System.IO (hFlush, stdout)
 import Control.Monad (when)
 import Data.Maybe (listToMaybe)
+import Data.List (delete)
 
 
 type Room = String
@@ -168,13 +169,19 @@ pick targetItem state = do
 addMilestone :: Milestone -> GameState -> GameState
 addMilestone milestone state = state {milestones = (milestones state ++ [milestone])}
 
-
 addItem :: Item -> GameState ->  GameState
 addItem item state = state {holding = (holding state ++ [item])}
 
+deleteItem :: Item -> GameState -> GameState
+deleteItem item state = state {holding = delete item (holding state)}
+
+unlockRoom :: Room -> GameState -> GameState
+unlockRoom room state = state {roomsStates = updatedRoomsStates}
+    where
+        updatedRoomsStates = [(r, if r == room then True else s) | (r, s) <- roomsStates state]
+
 objectInRoom :: Object -> Room -> GameState -> Bool
 objectInRoom object room state = object `elem` [obj | (obj, r, _) <- objects state, r == room]
-
 
 setObjectUnlockedInRoom :: Object -> Room -> Unlocked -> GameState -> GameState
 setObjectUnlockedInRoom object room unlocked state = state {objects = updatedObjects}
@@ -454,6 +461,42 @@ printControls = printLines [
     "Simple, right?"]
 
 
+useItemOnObject :: Item -> Object -> GameState -> IO GameState
+useItemOnObject item object state = do
+    case (item, object) of
+        ("gas canister", "gas engine") -> do
+            newState <- useCanisterGasEngine state
+            return newState
+        ("petrol canister", "petrol engine") -> do
+            newState <- useCanisterPetrolEngine state
+            return newState
+        _ -> do 
+            printLines ["You can't do that"]
+            return state
+
+
+useCanisterGasEngine :: GameState -> IO GameState
+useCanisterGasEngine state = do
+    printLines ["You connect the gas canister to the right engine. The gauge stabilizes, indicating full fuel."]
+    let newState = addMilestone "gas engine" $ addItem "empty canister" $ deleteItem "gas canister" state
+    newState <- unlockElectrical newState
+    return newState
+
+useCanisterPetrolEngine :: GameState -> IO GameState
+useCanisterPetrolEngine state = do
+    printLines ["You carefully pour the petrol into the left engine. The fuel gauge rises to full!"]
+    let newState = addMilestone "petrol engine" $ addItem "empty canister" $ deleteItem "petrol canister" state
+    newState <- unlockElectrical newState
+    return newState
+
+unlockElectrical :: GameState -> IO GameState
+unlockElectrical state = do
+    if "gas engine" `elem` milestones state && "petrol engine" `elem` milestones state then do
+        printLines ["You managed to unlock Electrical"]
+        let newState = unlockRoom "Electrical" state
+        return newState
+    else do return state
+
 gameLoop :: GameState -> IO ()
 gameLoop state = do
     cmd <- readCommand
@@ -481,8 +524,14 @@ gameLoop state = do
             (itemWords, "on" : objectWords) -> do
                 let item = unwords itemWords
                 let object = unwords objectWords
-                printLines ["Using " ++ item ++ " on " ++ object]
-                gameLoop state
+                if item `elem` holding state && object `elem` objectsInRoom then do
+                    newState <- useItemOnObject item object state
+                    gameLoop newState
+                else do 
+                    printLines ["You can't do that"]
+                    gameLoop state
+                where 
+                    objectsInRoom = [object | (object, room, _) <- objects state, room == currentRoom state]
             (itemObjectWords, []) -> do
                 let itemObject = unwords itemObjectWords
                 if itemObject `elem` holding state then do
