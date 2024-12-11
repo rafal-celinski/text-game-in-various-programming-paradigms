@@ -197,6 +197,18 @@ setObjectUnlocked object unlocked state = state {objects = updatedObjects}
     where
         updatedObjects = [(obj, r, if obj == object then unlocked else oldUnlocked) | (obj, r, oldUnlocked) <- objects state]
         
+useItem :: Item -> GameState -> IO GameState
+useItem item state = do
+    newState <- case item of 
+        "encyclopedia" -> useEncyclopedia state
+        _ -> do printItemDescription item >> return state
+    return newState
+    
+useEncyclopedia :: GameState -> IO GameState
+useEncyclopedia state = do 
+    printItemDescription "encyclopedia"
+    return $ addMilestone "encyclopedia" state
+    
 
 useObject :: Object -> GameState -> IO GameState
 useObject object state = do
@@ -512,6 +524,42 @@ printRoomLocked room = do
         "Shields" -> printLines ["You need v2_access_card to access this room"]
         _ -> printLines ["You can't go there"]
 
+printItemDescription :: Item -> IO ()
+printItemDescription item = do
+    case item of
+        "v1 access card" -> printLines [
+            "You hold the v1 access card, granting you access to basic areas of the ship.", 
+            "It’s the first level of security, crucial for unlocking admin panel."]
+        "v2 access card" -> printLines [
+            "The v2 access card glows faintly, indicating a higher level of security.", 
+            "With it, you can access more sensitive areas of the ship."]
+        "encyclopedia" -> printLines [
+            "You open the worn pages of the encyclopedia, flipping through information on various alien species.", 
+            "One entry catches your attention: it describes a species known for its shape-shifting abilities and hostile nature.", 
+            "A critical line reads: 'Though formidable, this species has one weakness—intense, direct light can disorient or even harm it.'", 
+            "Maybe bringing a flashlight to the battlefield wouldn't be a bad idea."]
+        "flashlight" -> printLines ["You don't know how long the battery will last, but the light could easily blind someone."]
+        "wrench" -> printLines ["A sturdy wrench. It could be useful for repairs or as a makeshift weapon."]
+        "plushie" -> printLines ["A soft, well-loved plushie. It might not be useful, but it could be comforting."]
+        "empty canister" -> printLines ["An empty canister that could be refilled with something useful later."]
+        "pokemon card" -> printLines ["A pristine Pokémon card from 1995 with holographic Charizard—it’s probably worth a fortune!"]
+        "petrol canister" -> printLines ["A heavy canister filled with petrol. It might come in handy if you need fuel."]
+        "rope" -> printLines ["A strong rope that could be useful for climbing or tying things down."]
+        "carton" -> printLines ["An empty carton. Not very useful on its own, but maybe it could hold something."]
+        "lightbulbs" -> printLines ["A box of lightbulbs. They might be useful to replace a broken one."]
+        "gas canister" -> printLines ["A pressurized gas canister. It could be dangerous if used improperly."]
+        "shotgun" -> printLines ["A powerful shotgun with a full magazine. It could be your best defense in a fight."]
+        "medical report" -> printLines [
+            "MEDICAL REPORT",
+            "--------------",
+            "Date: 06.04.2124", 
+            "", 
+            "The examined entity is a human.",
+            "",
+            "Valid only with v1_access_card."]
+        _ -> printLines ["It is " ++ item]
+
+
 
 printStartGame :: GameState -> IO ()
 printStartGame state = do
@@ -608,8 +656,8 @@ gameLoop state = do
             (itemObjectWords, []) -> do
                 let itemObject = unwords itemObjectWords
                 if itemObject `elem` holding state then do
-                    printLines ["Using item: " ++ itemObject]
-                    gameLoop state
+                    newState <- useItem itemObject state
+                    gameLoop newState
                 else if itemObject `elem` objectsInRoom then do
                     newState <- useObject itemObject state
                     gameLoop newState
