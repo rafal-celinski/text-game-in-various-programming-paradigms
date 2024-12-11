@@ -15,6 +15,7 @@ type Milestone = String
 
 data GameState = GameState {
     currentRoom :: Room,
+    previousRoom :: Room,
     holding :: [Item],
     items :: [(Item, Room)],
     objects :: [(Object, Room, Unlocked)],
@@ -118,6 +119,7 @@ generateGameState = do
     startRoom <- return (startRooms !! idx)
     return GameState {
         currentRoom = startRoom,
+        previousRoom = "",
         holding = [],
         items = items,
         objects = initialObjects,
@@ -138,11 +140,15 @@ goTo room state = do
     where
         roomUnlocked = maybe False id $ listToMaybe [unlocked | (r, unlocked) <- roomsStates state, r == room]
         
+        
 
 move :: Room -> GameState -> GameState
 move targetRoom state =
     if targetRoom `elem` neighbors
-    then state { currentRoom = targetRoom}
+    then state { 
+                previousRoom = currentRoom state,
+                objects = [(if obj == "blinded aliens" && room == currentRoom state then "aliens" else obj, room, unlocked) | (obj, room, unlocked) <- objects state],
+                currentRoom = targetRoom}
     else state
   where
     neighbors = case lookup (currentRoom state) rooms of
@@ -350,12 +356,49 @@ useItemOnObject item object state = do
         ("v2 access card", "admin panel") -> do useAccessCardOnAdminPanel objectUnlocked state
         ("medical report", "admin panel") -> do useMedicalReportOnAdminPanel objectUnlocked state
         ("wrench", "pipe") -> do useWrenchOnPipe objectUnlocked state
+        ("flashlight", "aliens") -> do useFlashlightOnAliens state
+        ("shotgun", "aliens") -> do useShotgunOnAliens state
+        ("flashlight", "blinded aliens") -> do useFlashlightOnBlindedAliens state 
+        ("shotgun", "blinded aliens") -> do useShotgunOnBlindedAliens state
         _ -> do printLines ["You can't do that"] >> return state
     return newState
     where
         objectUnlocked = maybe False id $ listToMaybe [unlocked | (obj, _, unlocked) <- objects state, obj == object]
             
+useFlashlightOnAliens :: GameState -> IO GameState
+useFlashlightOnAliens state = do
+    printLines [
+        "You flick on the flashlight, pointing it directly at the alien figures before you.",
+        "The intense beam pierces through the darkness, and the creatures recoil, their hollow eyes blinking and limbs twitching in confusion.",
+        "They stagger back, momentarily stunned and disoriented by the powerful light.",
+        "It won’t hold them for long, but you have a chance to move or attack while they’re blinded."]
+    return state { objects = [(if obj == "aliens" && room == currentRoom state then "blinded aliens" else obj, room, unlocked) | (obj, room, unlocked) <- objects state] }
 
+useFlashlightOnBlindedAliens :: GameState -> IO GameState
+useFlashlightOnBlindedAliens state = do
+    printLines ["Don''t play with those things, at any moment flashlight can stop working and you stand no chance without it."]
+    return state
+
+useShotgunOnAliens :: GameState -> IO GameState
+useShotgunOnAliens state = do
+    printLines [
+        "You raise the shotgun, heart pounding as you take aim at the alien figures.",
+        "With a deafening blast, the shotgun kicks against your shoulder, the recoil intense but satisfying.",
+        "The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.",
+        "Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings."]
+    let newState = addMilestone ("aliens " ++ (currentRoom state)) state
+    return newState { objects = [(if obj == "aliens" && room == currentRoom state then "corpse" else obj, room, unlocked) | (obj, room, unlocked) <- objects state] }
+
+useShotgunOnBlindedAliens :: GameState -> IO GameState
+useShotgunOnBlindedAliens state = do
+    printLines [
+        "You take advantage of the aliens’ confusion, raising the shotgun with steady hands.",
+        "The creatures, disoriented and staggering, barely react as you pull the trigger. The shotgun roars, filling the room with an explosive sound.",
+        "The blinded aliens crumple, their strange, distorted forms dropping heavily to the ground, helpless under the onslaught.",
+        "As they fall, their true forms begin to seep through the disguise – grotesque, sinewy masses twisted into shapes that vaguely hint at something once living.",
+        "All that remains are eerie, unnatural corpses scattered on the floor, a disturbing testament to their failed mimicry of the crew."]
+    let newState = addMilestone ("aliens " ++ (currentRoom state)) state
+    return newState { objects = [(if obj == "blinded aliens" && room == currentRoom state then "corpse" else obj, room, unlocked) | (obj, room, unlocked) <- objects state] }
 
 useCanisterOnGasEngine :: Unlocked -> GameState -> IO GameState
 useCanisterOnGasEngine unlocked state = do
@@ -447,22 +490,33 @@ printLines xs = putStr (unlines xs)
 lookAround :: GameState -> IO ()
 lookAround state = do
     printLines ["You are in " ++ currentRoom state, ""]
-    printRoomInfo (currentRoom state)
-    printLines ["", "You can go to: " ++ intercalate(", ") neighbors]
-    when (length itemsInRoom > 0) $
-        printLines ["There are many items around: " ++ intercalate(", ") itemsInRoom]
-    when (length objectsInRoom > 0 ) $
-        printLines ["You can use: " ++ intercalate(", ") objectsInRoom]
-    where
+    printRoomInfo (currentRoom state) aliensInRoom
+    if aliensInRoom then do
+        printLines ["You are in grave danger. You can 'run' or figure out if there is a way to deal with monsters."]
+        if "shotgun" `elem` holding state then
+            printLines ["You grip the shotgun firmly, its weight solid and reassuring in your hands. Whatever these things are, you’re ready."]
+        else if "encyclopedia" `elem` milestones state && "flashlight" `elem` holding state then
+            printLines ["You feel the weight of the flashlight in your pocket, its cool metal a reminder of the creatures’ one known weakness."]
+        else
+            return ()
+    else do
+        printLines ["", "You can go to: " ++ intercalate(", ") neighbors]
+        when (not (null itemsInRoom)) $
+            printLines ["There are many items around: " ++ intercalate(", ") itemsInRoom]
+        when (not (null objectsInRoom)) $
+            printLines ["You can use: " ++ intercalate(", ") objectsInRoom]
+  where
+    aliensInRoom = objectInRoom "aliens" (currentRoom state) state
     neighbors = case lookup (currentRoom state) rooms of
         Just ns -> ns
         Nothing -> []
     itemsInRoom = [item | (item, room) <- items state, room == currentRoom state]
     objectsInRoom = [object | (object, room, _) <- objects state, room == currentRoom state]
 
+    
 
-printRoomInfo :: Room -> IO ()
-printRoomInfo room = do
+printRoomInfo :: Room -> Bool -> IO ()
+printRoomInfo room aliensInRoom = do
     case room of
         "Reactor" -> printLines [
             "The reactor room hums with an intense energy, the core pulsing with an eerie glow.",
@@ -482,9 +536,18 @@ printRoomInfo room = do
         "Electrical" -> printLines [ 
             "The electrical room is dark, with sparking wires and buzzing panels lining the walls.", 
             "You can feel the static in the air, and caution is essential here."]
-        "Cafeteria" -> printLines [
-            "Long tables and empty food trays fill the cafeteria, once bustling with crew.", 
-            "The silence is unsettling, and a faint aroma of old food still lingers."]
+        "Cafeteria" -> if aliensInRoom then 
+                printLines [
+                "You step into the dimly lit room, and a chill immediately runs down your spine",
+                "Figures stand scattered across the room, moving with a strange", 
+                "unnatural grace. At first glance, they look like members of your crew",
+                "But as they turn toward you, you notice their eyes: empty, hollow, and unblinking, devoid of any humanity.",
+                "Their movements are jerky, almost as if they’re struggling to control the forms they’ve taken.",
+                "A faint, low hiss fills the air as they begin to advance, recognizing you as an outsider.",
+                "If you are not prepared - prepare to run for your life!"]
+            else
+                printLines ["Long tables and empty food trays fill the cafeteria, once bustling with crew.", 
+                "The silence is unsettling, and a faint aroma of old food still lingers."]
         "Storage" -> printLines [
             "Storage is cluttered with crates and containers, all labeled with various supplies.", 
             "It’s cramped and shadowy, making it hard to see what might be hiding here."]
@@ -500,9 +563,15 @@ printRoomInfo room = do
             "The remaining crew members look up as you enter, their eyes heavy with exhaustion but filled with relief.",
             "They offer tired smiles, grateful that the ordeal is finally over, and a calm settles over the room as everyone regains a sense of safety.",
             "You can talk to them using `talk`."]
-        "Shields" -> printLines [
-            "Shield generators hum softly here, their power keeping the ship protected in space.",
-            "However, flickering lights suggest something isn’t working quite right."]
+        "Shields" -> if aliensInRoom then
+                    printLines ["You step cautiously into the shields room, but freeze as a pair of low, guttural growls emerges from the darkness.",
+                    "Two alien figures shift in the shadows, their twisted forms barely visible in the dim, flickering lights.",
+                    "Both turn towards you, hollow eyes reflecting a strange glint as they advance, their movements synchronized and predatory.",
+                    "You lift whatever you have in hand, desperately hoping to hold them at bay. The aliens hesitate, momentarily recoiling, their limbs twitching as if repelled.",
+                    "It’s only a brief reprieve, and you can feel the tension building—their hesitation won’t last."]
+                else
+                    printLines ["Shield generators hum softly here, their power keeping the ship protected in space.",
+                    "However, flickering lights suggest something isn’t working quite right."]
         "Admin Room" -> printLines [
             "The administration room is filled with terminals and data consoles.",
             "This is where important authorizations are made, and the captain’s log rests nearby."]
@@ -614,64 +683,88 @@ printEnding = printLines [
 gameLoop :: GameState -> IO ()
 gameLoop state = do
     cmd <- readCommand
-    case words cmd of
-        ["list", "my", "inventory"] -> do
-            printLines["You are holding " ++ intercalate(", ") (holding state)]
-            gameLoop state
-        ("go" : "to" : rest) -> do
-            let room = unwords rest
-            newState <- goTo room state
-            gameLoop newState
-        ["quit"] -> return ()
-        ["controls"] -> do 
-            printControls
-            gameLoop state
-        ["look", "around"] -> do
-            lookAround state
-            gameLoop state
-        ["talk"] -> do
-            if currentRoom state == "Navigation" then do 
-                printEnding
-                gameLoop state
-            else do
-                printLines ["Already talking to yourself?"]
-                gameLoop state
-        ("pick" : "up" : rest) -> do
-            let item = unwords rest
-            newState <- pick item state
-            printLines["You picked up " ++ item]
-            gameLoop newState
-        ("use" : rest) -> case break (== "on") rest of
-            (itemWords, "on" : objectWords) -> do
-                let item = unwords itemWords
-                let object = unwords objectWords
-                if item `elem` holding state && object `elem` objectsInRoom then do
-                    newState <- useItemOnObject item object state
+    if aliensInRoom 
+        then
+            case words cmd of
+                ["list", "my", "inventory"] -> do
+                    printLines["You are holding " ++ intercalate(", ") (holding state)]
+                    gameLoop state
+                ["quit"] -> return ()
+                ["run"] -> do
+                    newState <- goTo (previousRoom state) state
                     gameLoop newState
-                else do 
+                ("use" : item : "on" : "aliens" : []) ->
+                    if item `elem` holding state then do
+                        newState <- useItemOnObject item "aliens" state
+                        gameLoop newState
+                    else do 
+                        printLines ["You can't do that"]
+                        gameLoop state
+                
+                _ -> do 
                     printLines ["You can't do that"]
                     gameLoop state
-                where 
-                    objectsInRoom = [object | (object, room, _) <- objects state, room == currentRoom state]
-            (itemObjectWords, []) -> do
-                let itemObject = unwords itemObjectWords
-                if itemObject `elem` holding state then do
-                    newState <- useItem itemObject state
-                    gameLoop newState
-                else if itemObject `elem` objectsInRoom then do
-                    newState <- useObject itemObject state
-                    gameLoop newState
-                else do
-                    printLines ["Invalid use command"]
+        else
+            case words cmd of
+                ["list", "my", "inventory"] -> do
+                    printLines["You are holding " ++ intercalate(", ") (holding state)]
                     gameLoop state
-                where 
-                    objectsInRoom = [object | (object, room, _) <- objects state, room == currentRoom state]
-            _ -> do
-                printLines ["Invalid use command"]
-                gameLoop state
-        _ -> do
-            printLines ["Unknown command."]
-            gameLoop state
+                ("go" : "to" : rest) -> do
+                    let room = unwords rest
+                    newState <- goTo room state
+                    gameLoop newState
+                ["quit"] -> return ()
+                ["controls"] -> do 
+                    printControls
+                    gameLoop state
+                ["look", "around"] -> do
+                    lookAround state
+                    gameLoop state
+                ["talk"] -> do
+                    if currentRoom state == "Navigation" then do 
+                        printEnding
+                        gameLoop state
+                    else do
+                        printLines ["Already talking to yourself?"]
+                        gameLoop state
+                ("pick" : "up" : rest) -> do
+                    let item = unwords rest
+                    newState <- pick item state
+                    printLines["You picked up " ++ item]
+                    gameLoop newState
+                ("use" : rest) -> case break (== "on") rest of
+                    (itemWords, "on" : objectWords) -> do
+                        let item = unwords itemWords
+                        let object = unwords objectWords
+                        if item `elem` holding state && object `elem` objectsInRoom then do
+                            newState <- useItemOnObject item object state
+                            gameLoop newState
+                        else do 
+                            printLines ["You can't do that"]
+                            gameLoop state
+                        where 
+                            objectsInRoom = [object | (object, room, _) <- objects state, room == currentRoom state]
+                    (itemObjectWords, []) -> do
+                        let itemObject = unwords itemObjectWords
+                        if itemObject `elem` holding state then do
+                            newState <- useItem itemObject state
+                            gameLoop newState
+                        else if itemObject `elem` objectsInRoom then do
+                            newState <- useObject itemObject state
+                            gameLoop newState
+                        else do
+                            printLines ["Invalid use command"]
+                            gameLoop state
+                        where 
+                            objectsInRoom = [object | (object, room, _) <- objects state, room == currentRoom state]
+                    _ -> do
+                        printLines ["Invalid use command"]
+                        gameLoop state
+                _ -> do
+                    printLines ["Unknown command."]
+                    gameLoop state
+    where
+        aliensInRoom = objectInRoom "aliens" (currentRoom state) state
 
 
 main = do
