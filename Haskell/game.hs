@@ -60,7 +60,7 @@ initialRoomsStates = [
     ("Storage", True),
     ("Upper Engine", True),
     ("Electrical", False),
-    ("Shields", True),
+    ("Shields", False),
     ("Cafeteria", True),
     ("Oxygen", False),
     ("Navigation", False),
@@ -387,7 +387,13 @@ useShotgunOnAliens state = do
         "The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.",
         "Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings."]
     let newState = addMilestone ("aliens " ++ (currentRoom state)) state
-    return newState { objects = [(if obj == "aliens" && room == currentRoom state then "corpse" else obj, room, unlocked) | (obj, room, unlocked) <- objects state] }
+        updatedObjects = [(if obj == "aliens" && room == currentRoom state then "corpse" else obj, room, unlocked) 
+                         | (obj, room, unlocked) <- objects newState]
+        newStateWithObjects = newState { objects = updatedObjects }
+    
+    let finalState = tryUnlockNavigation newStateWithObjects
+
+    return finalState
 
 useShotgunOnBlindedAliens :: GameState -> IO GameState
 useShotgunOnBlindedAliens state = do
@@ -397,8 +403,16 @@ useShotgunOnBlindedAliens state = do
         "The blinded aliens crumple, their strange, distorted forms dropping heavily to the ground, helpless under the onslaught.",
         "As they fall, their true forms begin to seep through the disguise – grotesque, sinewy masses twisted into shapes that vaguely hint at something once living.",
         "All that remains are eerie, unnatural corpses scattered on the floor, a disturbing testament to their failed mimicry of the crew."]
+    
     let newState = addMilestone ("aliens " ++ (currentRoom state)) state
-    return newState { objects = [(if obj == "blinded aliens" && room == currentRoom state then "corpse" else obj, room, unlocked) | (obj, room, unlocked) <- objects state] }
+        updatedObjects = [(if obj == "blinded aliens" && room == currentRoom state then "corpse" else obj, room, unlocked) 
+                         | (obj, room, unlocked) <- objects newState]
+        newStateWithObjects = newState { objects = updatedObjects }
+    
+    let finalState = tryUnlockNavigation newStateWithObjects
+
+    return finalState
+
 
 useCanisterOnGasEngine :: Unlocked -> GameState -> IO GameState
 useCanisterOnGasEngine unlocked state = do
@@ -448,6 +462,7 @@ useMedicalReportOnAdminPanel unlocked state = do
                 $ deleteItem "v1 access card"
                 $ setRoomUnlocked "Weapons" True
                 $ setRoomUnlocked "Oxygen" True
+                $ setRoomUnlocked "Shields" True
                 $ setObjectUnlocked "admin panel" False state
     else do
         printLines ["You need the access card for the medical report to be valid."]
@@ -472,8 +487,15 @@ useWrenchOnPipe unlocked state = do
             "With a few strong turns, you feel the bolts begin to tighten, pulling the pipe’s sections securely together.",
             "The hissing sound gradually fades as the leak closes, and the air in the room feels more stable.", 
             "Satisfied with the makeshift repair, you step back, knowing this should hold long enough to restore the oxygen flow."]
-        return $ addMilestone "pipe" $ setRoomUnlocked "Navigation" True state
+        return $ addMilestone "pipe" $ tryUnlockNavigation state
 
+
+tryUnlockNavigation :: GameState -> GameState
+tryUnlockNavigation state =
+    let milestonesToCheck = ["aliens Cafeteria", "aliens Shields", "pipe", "v2 access card"]
+    in if all (`elem` milestones state) milestonesToCheck
+        then setRoomUnlocked "Navigation" True state
+        else state
 
 readCommand :: IO String
 readCommand = do
