@@ -139,8 +139,6 @@ goTo room state = do
         roomUnlocked = maybe False id $ listToMaybe [unlocked | (r, unlocked) <- roomsStates state, r == room]
         
 
-
-
 move :: Room -> GameState -> GameState
 move targetRoom state =
     if targetRoom `elem` neighbors
@@ -169,19 +167,24 @@ pick targetItem state = do
 addMilestone :: Milestone -> GameState -> GameState
 addMilestone milestone state = state {milestones = (milestones state ++ [milestone])}
 
+
 addItem :: Item -> GameState ->  GameState
 addItem item state = state {holding = (holding state ++ [item])}
 
+
 deleteItem :: Item -> GameState -> GameState
 deleteItem item state = state {holding = delete item (holding state)}
+
 
 unlockRoom :: Room -> GameState -> GameState
 unlockRoom room state = state {roomsStates = updatedRoomsStates}
     where
         updatedRoomsStates = [(r, if r == room then True else s) | (r, s) <- roomsStates state]
 
+
 objectInRoom :: Object -> Room -> GameState -> Bool
 objectInRoom object room state = object `elem` [obj | (obj, r, _) <- objects state, r == room]
+
 
 setObjectUnlockedInRoom :: Object -> Room -> Unlocked -> GameState -> GameState
 setObjectUnlockedInRoom object room unlocked state = state {objects = updatedObjects}
@@ -306,7 +309,6 @@ useAdminPanel unlocked state = do
             "The activity log shows their recent attempts at coordination."]
         let newState = setObjectUnlocked "admin panel" False state
         return newState
-
     else do
         printLines [
             "In front of you is the administration panel, the crew management center on the spaceship.",
@@ -404,6 +406,7 @@ printRoomInfo room = do
             "This is where important authorizations are made, and the captain’s log rests nearby."]
         _ -> printLines [""]
 
+
 printRoomLocked :: Room -> IO ()
 printRoomLocked room = do
     case room of
@@ -463,31 +466,34 @@ printControls = printLines [
 
 useItemOnObject :: Item -> Object -> GameState -> IO GameState
 useItemOnObject item object state = do
-    case (item, object) of
-        ("gas canister", "gas engine") -> do
-            newState <- useCanisterGasEngine state
-            return newState
-        ("petrol canister", "petrol engine") -> do
-            newState <- useCanisterPetrolEngine state
-            return newState
-        _ -> do 
-            printLines ["You can't do that"]
-            return state
+    newState <- case (item, object) of
+        ("gas canister", "gas engine") -> do useCanisterOnGasEngine objectUnlocked state
+        ("petrol canister", "petrol engine") -> do useCanisterOnPetrolEngine objectUnlocked state
+        ("v1 access card", "admin panel") -> do useAccessCardOnAdminPanel objectUnlocked state
+        ("v2 access card", "admin panel") -> do useAccessCardOnAdminPanel objectUnlocked state
+        ("medical report", "admin panel") -> do useMedicalReportOnAdminPanel objectUnlocked state
+        _ -> do printLines ["You can't do that"] >> return state
+    return newState
+    where
+        objectUnlocked = maybe False id $ listToMaybe [unlocked | (obj, _, unlocked) <- objects state, obj == object]
+            
 
 
-useCanisterGasEngine :: GameState -> IO GameState
-useCanisterGasEngine state = do
+useCanisterOnGasEngine :: Unlocked -> GameState -> IO GameState
+useCanisterOnGasEngine unlocked state = do
     printLines ["You connect the gas canister to the right engine. The gauge stabilizes, indicating full fuel."]
     let newState = addMilestone "gas engine" $ addItem "empty canister" $ deleteItem "gas canister" state
     newState <- unlockElectrical newState
     return newState
 
-useCanisterPetrolEngine :: GameState -> IO GameState
-useCanisterPetrolEngine state = do
+
+useCanisterOnPetrolEngine :: Unlocked -> GameState -> IO GameState
+useCanisterOnPetrolEngine unlocked state = do
     printLines ["You carefully pour the petrol into the left engine. The fuel gauge rises to full!"]
     let newState = addMilestone "petrol engine" $ addItem "empty canister" $ deleteItem "petrol canister" state
     newState <- unlockElectrical newState
     return newState
+
 
 unlockElectrical :: GameState -> IO GameState
 unlockElectrical state = do
@@ -496,6 +502,42 @@ unlockElectrical state = do
         let newState = unlockRoom "Electrical" state
         return newState
     else do return state
+
+
+useMedicalReportOnAdminPanel :: Unlocked -> GameState -> IO GameState
+useMedicalReportOnAdminPanel unlocked state = do
+    if not unlocked then do
+        printLines ["To use it, you need to authenticate using your access_card."]
+        return state
+    else if "v2 access card" `elem` holding state then do
+        printLines ["You already have your v2 access card.", "You don't need another one."]
+        return $ setObjectUnlocked "admin panel" False state
+    else if "v1 access card" `elem` holding state then do
+        printLines [
+            "Your medical report flashes on the screen, confirming that you are indeed human.",
+            "As the information sinks in, a new message appears, offering a glimmer of hope.",
+            "In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.",
+            "As you obtain the higher-level access card, an alarm suddenly blares through the ship.",
+            "\"Warning! Oxygen levels critical. Immediate repair needed to maintain safe breathing conditions.\"",
+            "The system message echoes ominously, sending a chill down your spine.",
+            "",
+            "To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy..."]
+        return $ addMilestone "v2 access card"
+                 $ addItem "v2 access card"
+                 $ deleteItem "v1 access card"
+                 $ setObjectUnlocked "admin panel" False state
+    else do
+        printLines ["You need the access card for the medical report to be valid."]
+        return $ setObjectUnlocked "admin panel" False state
+
+useAccessCardOnAdminPanel :: Unlocked -> GameState -> IO GameState
+useAccessCardOnAdminPanel unlocked state = do
+    printLines [
+        "Your access card hums softly as it validates your credentials, granting you a fleeting moment of control.",
+        "With the system poised for your commands, you can execute one critical operation before the terminal locks out once more."]
+    let newState = setObjectUnlocked "admin panel" True state
+    return newState
+
 
 gameLoop :: GameState -> IO ()
 gameLoop state = do
