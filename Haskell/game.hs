@@ -487,7 +487,7 @@ useWrenchOnPipe unlocked state = do
             "With a few strong turns, you feel the bolts begin to tighten, pulling the pipe’s sections securely together.",
             "The hissing sound gradually fades as the leak closes, and the air in the room feels more stable.", 
             "Satisfied with the makeshift repair, you step back, knowing this should hold long enough to restore the oxygen flow."]
-        return $ addMilestone "pipe" $ tryUnlockNavigation state
+        return $ tryUnlockNavigation $ addMilestone "pipe" state
 
 
 tryUnlockNavigation :: GameState -> GameState
