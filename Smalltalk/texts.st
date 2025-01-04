@@ -13,7 +13,7 @@ Object subclass: Texts [
         'look around - lets you look around the room you are currently in and see potential ways to interact with the environment.'
         'go to [place] - use it to move around the ship.'
         'pick up [item] - pick up an item.'
-        'list my inventory - list items you currently possess.'
+        'look up inventory - list items you currently possess.'
         'use [item] on [object] - you can use some of the items to accomplish many things.'
         'use [item/object] - use things that don''t have a specific target.'
         'For better understanding of the last two commands, we will look at the example below:'
@@ -44,7 +44,18 @@ Object subclass: Texts [
         ''
     ).
 
-
+    Texts class >> printListinLine: anArray [
+        |count|
+        count := 1.
+        anArray do: [ :element |
+            Transcript show: (element getName).
+            (count < anArray size) ifTrue: [
+                Transcript show: ', '.
+            ].
+            count := count + 1.
+        ].
+        Transcript cr.
+    ]
     
     Texts class >> printLines: anArray [
         anArray do: [ :string | Transcript show: string; cr ]

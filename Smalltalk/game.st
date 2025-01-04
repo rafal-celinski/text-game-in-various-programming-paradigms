@@ -1,5 +1,5 @@
 Object subclass: Game [
-    | isGameOver rooms items currentRoom roomData itemsData|
+    | isGameOver rooms items currentRoom roomData itemsData holdingItems|
 
     Game class >> new [
         | g |
@@ -12,6 +12,7 @@ Object subclass: Game [
         isGameOver := false.
         items := OrderedCollection new.
         rooms := OrderedCollection new.
+        holdingItems := OrderedCollection new.
         self setupRooms.
         self setupItems.
         currentRoom := (rooms copyFrom: 1 to: 6) atRandom.
@@ -22,6 +23,12 @@ Object subclass: Game [
         room := rooms detect: [:r | r getName = roomName] ifNone: [nil].
         ^room
 
+    ]
+
+    getItemFromCurrentRoomByName: itemName [
+        |item|
+        item := currentRoom getItems detect: [:i | i getName = itemName] ifNone: [nil].
+        ^item
     ]
 
    setupRooms [
@@ -116,36 +123,20 @@ Object subclass: Game [
 
     printCurrentRoom [
         | neighbors count itemsInRoom|
+        Transcript show: 'You are in ', currentRoom getName; cr.
         Texts printLines: currentRoom getDescription.
         Transcript show: 'Rooms: '.
         neighbors := currentRoom getNeighbors.
-        count := 1.
-        neighbors do: [:neighbor |
-            Transcript show: (neighbor getName).
-            (count < neighbors size) ifTrue: [
-                Transcript show: ', '.
-            ].
-            count := count + 1.
-        ].
-        Transcript cr.
+        Texts printListinLine: neighbors.
         Transcript show: 'Items: '.
         itemsInRoom := currentRoom getItems.
-        count := 1.
-        itemsInRoom do: [:item |
-            Transcript show: (item getName).
-            (count <itemsInRoom size) ifTrue: [
-                Transcript show: ', '.
-            ].
-            count := count + 1.
-        ].
-        Transcript cr.
+        Texts printListinLine: itemsInRoom.
     ]
-
 
 
     move: roomName [
         | nextRoom |
-        nextRoom := rooms detect: [:room | (room getName) = roomName] ifNone: [nil].
+        nextRoom := currentRoom getNeighbors detect: [:room | (room getName) = roomName] ifNone: [nil].
         nextRoom ifNotNil: [
             nextRoom isRoomLocked ifTrue: [
                 Texts printLines: nextRoom getLockReason.
@@ -155,7 +146,24 @@ Object subclass: Game [
             self printCurrentRoom.
             ^self
         ].
-        Transcript show: 'Unknown room'; cr.
+        Transcript show: 'Can`t go there'; cr.
+    ]
+
+    pickUp: itemName [
+        |item|
+        item := self getItemFromCurrentRoomByName: itemName.
+        item ifNotNil: [
+            currentRoom removeItem: item.
+            holdingItems add: item.
+            Transcript show: 'Picked up ', (item getName); cr.
+            ^self
+        ].
+        Transcript show: 'Can`t do that'; cr.
+    ]
+
+    listInventory [
+        Transcript show: 'You are holding: '.
+        Texts printListinLine: holdingItems.
     ]
 
 
@@ -177,6 +185,16 @@ Object subclass: Game [
             (cmd startsWith: 'go to ') ifTrue: [
                 isUnknown := false.
                 self move: (cmd allButFirst: 6).
+            ].
+
+            (cmd startsWith: 'pick up ') ifTrue: [
+                isUnknown := false.
+                self pickUp: (cmd allButFirst: 8).
+            ].
+
+            cmd = 'look up inventory' ifTrue: [
+                isUnknown := false.
+                self listInventory.
             ].
 
             cmd = 'look around' ifTrue: [
