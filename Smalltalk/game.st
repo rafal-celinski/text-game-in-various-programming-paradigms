@@ -165,7 +165,7 @@ Object subclass: Game [
             ('power breaker' 'Electrical' #usePowerBreakerDescription false)
             ('aliens' 'Shields' #emptyDescription false)
             ('aliens' 'Cafeteria' #emptyDescription false)
-            ('admin panel' 'Admin Room' #useAdminPanelDescription true)
+            ('admin panel' 'Admin Room' #lockedAdminPanelDescription true)
             ('pipe' 'Oxygen' #usePipeDescription false)
     ).
 
@@ -341,9 +341,55 @@ setupActions [
             at: { nil. 'petrol engine' } put: [self usePetrolEngine];
             at: { nil. 'power breaker' } put: [self usePowerBreaker];
             at: { nil. 'scanner'} put: [self useScanner];
+            at: { nil. 'admin panel' } put: [self useAdminPanel];
             at: { 'gas canister'. 'gas engine' } put: [self useGasCanisterOnGasEngine];
-            at: { 'petrol canister'. 'petrol engine' } put: [self usePetrolCanisterOnPetrolEngine].
+            at: { 'petrol canister'. 'petrol engine' } put: [self usePetrolCanisterOnPetrolEngine];
+            at: { 'v1 access card'. 'admin panel'} put: [self useV1AccessCardOnAdminPanel];
+            at: { 'v2 access card'. 'admin panel'} put: [self useV1AccessCardOnAdminPanel];
+            at: { 'medical report'. 'admin panel'} put: [self useMedicalReportOnAdminPanel].
     ]
+
+useAdminPanel [
+        |adminPanel|
+        adminPanel := (self getObjectFromCurrentRoomByName: 'admin panel').
+        (adminPanel getIsLocked) ifTrue: [
+            Texts printLines: Texts lockedAdminPanelDescription.
+        ] ifFalse: [
+            Texts printLines: Texts unlockedAdminPanelDescription.
+            adminPanel setIsLocked: true.
+        ].
+]
+
+useV1AccessCardOnAdminPanel [
+        |adminPanel|
+        adminPanel := (self getObjectFromCurrentRoomByName: 'admin panel').
+        (adminPanel getIsLocked) ifTrue: [
+            Texts printLines: Texts useCardOnAdminPanelDescription.
+            adminPanel setIsLocked: false.
+        ] ifFalse: [
+            Texts printLines: Texts alreadyUnlockedPanelDescription.
+        ].
+]
+
+useMedicalReportOnAdminPanel [
+        |adminPanel medicalReport v2_access_card weapons shields|
+        adminPanel := (self getObjectFromCurrentRoomByName: 'admin panel').
+        (adminPanel getIsLocked) ifTrue: [
+            Texts printLines: Texts youNeedToUnlockPanelDescription.
+        ] ifFalse: [
+            medicalReport := (self getItemFromInventoryByName: 'medical report').
+            v2_access_card := (self getItemByName: 'v2 access card').
+            weapons := (self getRoomByName: 'Weapons').
+            shields := (self getRoomByName: 'Shields').
+
+            weapons setIsLocked: false.
+            shields setIsLocked: false.
+            holdingItems add: v2_access_card.
+            holdingItems remove: medicalReport.
+            adminPanel setIsLocked: true.
+            Texts printLines: Texts useMedicalReportOnAdminPanelDescription.
+        ].
+]
 
 useCameras [
         |cameras|

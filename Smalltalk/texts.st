@@ -204,8 +204,21 @@ Object subclass: Texts [
         ^#('You need v2_access_card to access this room').
     ]
 
-    Texts class >> v1_access_cardLockReason [
-        ^#('You need to use v1_access_card on admin panel before accessing it').
+    Texts class >> lockedAdminPanelDescription [
+        ^#(
+            'In front of you is the administration panel, the crew management center on the spaceship.'
+            'This is where you coordinate the activities of individual crew members,'
+            'assign tasks, monitor their health and morale, ensuring that everyone knows their place and role in this interstellar journey.'
+            'To use it, you need to authenticate using your access_card.'
+        ).
+    ]
+
+    Texts class >> unlockedAdminPanelDescription [
+        ^#(
+        'The administrative panel displays alarming data: two crew members are deceased, while four survivors sit in the navigation room,'
+        'their stress levels visibly elevated. The emergency mode is active, and the crew`s health indicators flash red, signaling a critical situation.'
+        'The activity log shows their recent attempts at coordination.'
+        ).
     ]
 
     Texts class >> scannerLockReason [
@@ -442,14 +455,6 @@ Object subclass: Texts [
         ).
     ]
 
-    Texts class >> useAdminPanelDescription [
-        ^#(
-            'The administrative panel displays alarming data: two crew members are deceased, while four survivors sit in the navigation room,'
-            'their stress levels visibly elevated. The emergency mode is active, and the crew''s health indicators flash red, signaling a critical situation.'
-            'The activity log shows their recent attempts at coordination.'
-        ).
-    ]
-
     Texts class >> usePipeDescription [
         ^#(
             'A sturdy metal pipe runs along the wall, but near one of the joints, a crack has started to leak oxygen in faint, rhythmic hisses.'
@@ -485,6 +490,23 @@ Object subclass: Texts [
             '"Warning! Oxygen levels critical. Immediate repair needed to maintain safe breathing conditions."'
             'The system message echoes ominously, sending a chill down your spine.'
             'To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy...'
+        ).
+    ]
+
+    Texts class >> useCardOnAdminPanelDescription [
+        ^#(
+            'Your access card hums softly as it validates your credentials, granting you a fleeting moment of control.'
+            'With the system poised for your commands, you can execute one critical operation before the terminal locks out once more.'
+        ).
+    ]
+
+    Texts class >> youNeedToUnlockPanelDescription [
+        ^#('To use it, you need to authenticate using your access_card.').
+    ]
+
+    Texts class >> alreadyUnlockedPanelDescription [
+        ^#(
+            'You already unlocked admin panel. Try doing something with it'
         ).
     ]
 
