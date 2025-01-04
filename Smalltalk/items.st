@@ -14,10 +14,10 @@ Object subclass: Item [
     ]
 
     getName [
-        ^name.
+        ^name
     ]
 
     getDescription [
-        ^description.
+        ^description
     ]
 ]

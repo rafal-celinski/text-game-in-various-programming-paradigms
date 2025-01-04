@@ -1,5 +1,5 @@
 Object subclass: Game [
-    | isGameOver rooms items objects currentRoom roomData itemsData objectsData holdingItems|
+    | isGameOver rooms items objects currentRoom roomData itemsData objectsData holdingItems actionMap milestones|
 
     Game class >> new [
         | g |
@@ -14,9 +14,12 @@ Object subclass: Game [
         rooms := OrderedCollection new.
         holdingItems := OrderedCollection new.
         objects := OrderedCollection new.
+        actionMap := Dictionary new.
+        milestones := OrderedCollection new.
         self setupRooms.
         self setupItems.
         self setupObjects.
+        self setupActions.
         currentRoom := (rooms copyFrom: 1 to: 6) atRandom.
     ]
 
@@ -29,13 +32,20 @@ Object subclass: Game [
 
     getItemFromInventoryByName: itemName [
         |item|
-        item := holdingItems detect: [:i | i getName = itemName] ifNone: [nil]
+        item := holdingItems detect: [:i | i getName = itemName] ifNone: [nil].
+        ^item
     ]
 
     getItemFromCurrentRoomByName: itemName [
         |item|
         item := currentRoom getItems detect: [:i | i getName = itemName] ifNone: [nil].
         ^item
+    ]
+
+    getObjectFromCurrentRoomByName: objectName [
+        |object|
+        object := currentRoom getObjects detect: [:i | i getName = objectName] ifNone: [nil].
+        ^object
     ]
 
    setupRooms [
@@ -163,6 +173,30 @@ Object subclass: Game [
     ].
 ]
 
+    setupActions [
+        actionMap
+            at: { nil. 'cameras' } put: [ self useCameras ].
+    ]
+
+    useCameras [
+        |cameras|
+        cameras := (self getObjectFromCurrentRoomByName: 'cameras').
+        Texts printLines: (cameras getDescription).
+        cameras setDescription: Texts cameraOffline.
+    ]
+
+    performActionWith: anItem on: anObject [
+    | actionKey actionBlock |
+    actionKey := { anItem. anObject }.
+    actionBlock := actionMap at: actionKey ifAbsent: [ 
+        Transcript show: 'Nothing happens.'; cr.
+        ^self
+    ].
+    Transcript show: 'Something happens.'; cr.
+    actionBlock value.
+]
+
+
     printCurrentRoom [
         Transcript show: 'You are in ', currentRoom getName; cr.
         Texts printLines: currentRoom getDescription.
@@ -205,6 +239,24 @@ Object subclass: Game [
     listInventory [
         Transcript show: 'You are holding: '.
         Texts printListinLine: holdingItems.
+    ]
+
+    use: name [
+        |interactiveObject|
+        interactiveObject := self getItemFromInventoryByName: name.
+        interactiveObject ifNotNil: [
+            Transcript show: 'Using ', (interactiveObject getName); cr.
+            Texts printLines: (interactiveObject getDescription).
+            ^self
+        ].
+        interactiveObject := self getObjectFromCurrentRoomByName: name.
+        interactiveObject ifNotNil: [
+            Transcript show: 'Using ', (interactiveObject getName); cr.
+            self performActionWith: nil on: name.
+            ^self
+        ].
+        Transcript show: 'You can`t do that'; cr.
+
     ]
 
     readCommand [
@@ -259,8 +311,8 @@ Object subclass: Game [
                 
             isUnknown ifTrue: [
                 Texts printLines: #('Unknown command.' '').
-            ]
-        ]
+            ].
+        ].
     ]
 ]
 
