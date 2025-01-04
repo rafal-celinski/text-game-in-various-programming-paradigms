@@ -408,6 +408,18 @@ Texts class >> useGasEngineDescription [
     ).
 ]
 
+Texts class >> gasEngineAfterRefuelDescription [
+    ^#(
+        'The gas engine provides power for the entire ship. Now it`s refueld and you can hear it working clearly.'
+    ).
+]
+
+Texts class >> useGasCanisterOnGasEngineDescription [
+    ^#(
+        'You connect the gas canister to the right engine. The gauge stabilizes, indicating full fuel.'
+    ).
+]
+
 Texts class >> usePetrolEngineDescription [
     ^#(
         'The petrol engine provides power for the entire ship.'
@@ -458,6 +470,18 @@ Texts class >> useMedicalReportOnAdminPanelDescription [
         'The system message echoes ominously, sending a chill down your spine.'
         'To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy...'
     ).
+]
+
+Texts class >> unlockElectricalDescription [
+    ^#('You managed to unlock Electrical').
+]
+
+Texts class >> petrolEngineAfterRefuelDescription [
+    ^#('The petrol engine provides power for the entire ship. After refuelling you can feel the engine`s vibrations').
+]
+
+Texts class >> usePetrolCanisterOnPetrolEngineDescription [
+    ^#('You carefully pour the petrol into the left engine. The fuel gauge rises to full!').
 ]
 
 ]

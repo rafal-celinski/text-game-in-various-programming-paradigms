@@ -36,6 +36,12 @@ Object subclass: Game [
         ^item
     ]
 
+    getItemByName: itemName [
+        |item|
+        item := items detect: [:i | i getName = itemName] ifNone: [nil].
+        ^item
+    ]
+
     getItemFromCurrentRoomByName: itemName [
         |item|
         item := currentRoom getItems detect: [:i | i getName = itemName] ifNone: [nil].
@@ -173,28 +179,8 @@ Object subclass: Game [
     ].
 ]
 
-    setupActions [
-        actionMap
-            at: { nil. 'cameras' } put: [ self useCameras ].
-    ]
 
-    useCameras [
-        |cameras|
-        cameras := (self getObjectFromCurrentRoomByName: 'cameras').
-        Texts printLines: (cameras getDescription).
-        cameras setDescription: Texts cameraOffline.
-    ]
-
-    performActionWith: anItem on: anObject [
-    | actionKey actionBlock |
-    actionKey := { anItem. anObject }.
-    actionBlock := actionMap at: actionKey ifAbsent: [ 
-        Transcript show: 'Nothing happens.'; cr.
-        ^self
-    ].
-    Transcript show: 'Something happens.'; cr.
-    actionBlock value.
-]
+    
 
 
     printCurrentRoom [
@@ -255,9 +241,20 @@ Object subclass: Game [
             self performActionWith: nil on: name.
             ^self
         ].
-        Transcript show: 'You can`t do that'; cr.
+        Transcript show: 'Invalid item or object specified'; cr.
 
     ]
+
+    use: itemName on: objectName [
+        | item object |
+        item := self getItemFromInventoryByName: itemName.
+        object := self getObjectFromCurrentRoomByName: objectName.
+        (item notNil and: [object notNil]) ifTrue: [
+            self performActionWith: itemName on: objectName.
+        ] ifFalse: [
+            Transcript show: 'Invalid item and object specified.'; cr.
+        ].
+]
 
     readCommand [
         Transcript show: '> '.
@@ -265,7 +262,7 @@ Object subclass: Game [
     ]
 
     run [
-        | cmd isUnknown |
+        | cmd isUnknown commandParts item object|
         Texts printPlot.
         Texts printInstructions.
         self printCurrentRoom.
@@ -286,8 +283,17 @@ Object subclass: Game [
 
             (cmd startsWith: 'use ') ifTrue: [
                 isUnknown := false.
-                self use: (cmd allButFirst: 4).
+                commandParts := (cmd allButFirst: 4) subStrings: ' '.
+                (commandParts includes: 'on') ifTrue: [
+                    item := ((commandParts copyFrom: 1 to: ((commandParts indexOf: 'on') - 1)) collect: [:each | each]) join: ' '.
+                    object := ((commandParts copyFrom: ((commandParts indexOf: 'on') + 1) to: commandParts size) collect: [:each | each]) join: ' '.
+                    self use: item on: object.
+                ] ifFalse: [
+                    item := (commandParts collect: [:each | each]) join: ' '.
+                    self use: item.
+                ].
             ].
+
 
             cmd = 'look up inventory' ifTrue: [
                 isUnknown := false.
@@ -314,6 +320,87 @@ Object subclass: Game [
             ].
         ].
     ]
+
+performActionWith: anItem on: anObject [
+    | actionKey actionBlock |
+    actionKey := { anItem. anObject }.
+    actionBlock := actionMap at: actionKey ifAbsent: [ 
+        Transcript show: 'Nothing happens.'; cr.
+        ^self
+    ].
+    actionBlock value.
+]
+
+
+setupActions [
+        actionMap
+            at: { nil. 'cameras' } put: [ self useCameras ];
+            at: { nil. 'gas engine' } put: [self useGasEngine];
+            at: { nil. 'petrol engine' } put: [self usePetrolEngine];
+            at: { 'gas canister'. 'gas engine' } put: [self useGasCanisterOnGasEngine];
+            at: { 'petrol canister'. 'petrol engine' } put: [self usePetrolCanisterOnPetrolEngine].
+    ]
+
+useCameras [
+        |cameras|
+        cameras := (self getObjectFromCurrentRoomByName: 'cameras').
+        Texts printLines: (cameras getDescription).
+        cameras setDescription: Texts cameraOffline.
+        milestones add: 'cameras'
+    ]
+
+useGasEngine [
+        |gasEngine|
+        gasEngine := (self getObjectFromCurrentRoomByName: 'gas engine').
+        Texts printLines: (gasEngine getDescription).
+]
+
+usePetrolEngine [
+        |petrolEngine|
+        petrolEngine := (self getObjectFromCurrentRoomByName: 'petrol engine').
+        Texts printLines: (petrolEngine getDescription).
+]
+
+useGasCanisterOnGasEngine [
+        |gasEngine gasCanister emptyCanister|
+        gasEngine := (self getObjectFromCurrentRoomByName: 'gas engine').
+        gasCanister := (self getItemFromInventoryByName: 'gas canister').
+        emptyCanister := (self getItemByName: 'empty canister').
+
+        holdingItems remove: gasCanister.
+        holdingItems add: emptyCanister.
+        milestones add: 'gas engine'.
+
+        Texts printLines: Texts useGasCanisterOnGasEngineDescription.
+        gasEngine setDescription: Texts gasEngineAfterRefuelDescription.
+        self unlockElectrical.
+]
+
+usePetrolCanisterOnPetrolEngine [
+        |petrolEngine petrolCanister emptyCanister|
+        petrolEngine := (self getObjectFromCurrentRoomByName: 'petrol engine').
+        petrolCanister := (self getItemFromInventoryByName: 'petrol canister').
+        emptyCanister := (self getItemByName: 'empty canister').
+
+        holdingItems remove: petrolCanister.
+        holdingItems add: emptyCanister.
+        milestones add: 'petrol engine'.
+
+        Texts printLines: Texts usePetrolCanisterOnPetrolEngineDescription.
+        petrolEngine setDescription: Texts petrolEngineAfterRefuelDescription.
+        self unlockElectrical.
+
+]
+
+unlockElectrical [
+        |electrical|
+        ((milestones includes: 'gas engine') and: [milestones includes: 'petrol engine']) ifTrue: [
+            electrical := (self getRoomByName: 'Electrical').
+            electrical setIsLocked: false.
+            Texts printLines: Texts unlockElectricalDescription. 
+        ].
+]
+
 ]
 
 Game new run.
