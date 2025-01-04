@@ -1,5 +1,5 @@
 Object subclass: Game [
-    | isGameOver rooms items currentRoom roomData itemsData holdingItems|
+    | isGameOver rooms items objects currentRoom roomData itemsData objectsData holdingItems|
 
     Game class >> new [
         | g |
@@ -13,8 +13,10 @@ Object subclass: Game [
         items := OrderedCollection new.
         rooms := OrderedCollection new.
         holdingItems := OrderedCollection new.
+        objects := OrderedCollection new.
         self setupRooms.
         self setupItems.
+        self setupObjects.
         currentRoom := (rooms copyFrom: 1 to: 6) atRandom.
     ]
 
@@ -25,6 +27,11 @@ Object subclass: Game [
 
     ]
 
+    getItemFromInventoryByName: itemName [
+        |item|
+        item := holdingItems detect: [:i | i getName = itemName] ifNone: [nil]
+    ]
+
     getItemFromCurrentRoomByName: itemName [
         |item|
         item := currentRoom getItems detect: [:i | i getName = itemName] ifNone: [nil].
@@ -33,6 +40,8 @@ Object subclass: Game [
 
    setupRooms [
     | roomName neighbors descriptionMethodName isLocked lockReasonMethodName description lockReason room |
+    "single room data format"
+    "name (neighbors) description isLocked reasonForLock"
     roomData := #(
         ('Reactor' #('Security' 'Lower Engine' 'Upper Engine') #reactorDescription false #emptyLockReason)
         ('Security' #('Reactor' 'Medbay') #securityDescription false #emptyLockReason)
@@ -85,6 +94,8 @@ Object subclass: Game [
 
     setupItems [
         | itemName descriptionMethodName item chosenRoomName chosenRoom description roomNames validRoomsNames|
+        "single item data format"
+        "(name (possible spawn room) description)" 
         itemsData := #(
             ('encyclopedia' #('Reactor' 'Security' 'Medbay' 'Lower Engine' 'Storage' 'Upper Engine') #encyclopediaDescription)
             ('flashlight' #('Reactor' 'Security' 'Medbay' 'Lower Engine' 'Storage' 'Upper Engine') #flashlightDescription)
@@ -120,17 +131,47 @@ Object subclass: Game [
         ].
     ]
 
+    setupObjects [
+        |objectName spawnRoom descriptionMethodName isLockedStatus gameObject|
+        "signle object data form"
+        "name spawningRoom description isLocked lockReason"
+        objectsData := #(
+            ('gas engine' 'Upper Engine' #useGasEngineDescription false)
+            ('petrol engine' 'Lower Engine' #usePetrolEngineDescription false)
+            ('scanner' 'Medbay' #useScannerDescription true)
+            ('cameras' 'Security' #cameraCafeteriaAndShields false)
+            ('power breaker' 'Electrical' #usePowerBreakerDescription false)
+            ('aliens' 'Shields' #emptyDescription false)
+            ('aliens' 'Cafeteria' #emptyDescription false)
+            ('admin panel' 'Admin Room' #useAdminPanelDescription true)
+            ('pipe' 'Oxygen' #usePipeDescription false)
+    ).
+
+    objectsData do: [:objectData |
+        objectName := objectData at: 1.
+        spawnRoom := (self getRoomByName: (objectData at: 2)).
+        descriptionMethodName := objectData at: 3.
+        isLockedStatus := objectData at: 4.
+        spawnRoom ifNotNil: [
+            gameObject := GameObject newGameObject: objectName
+                room: spawnRoom
+                description: (Texts perform: descriptionMethodName)
+                isLocked: isLockedStatus.
+            spawnRoom addObject: gameObject.
+            objects add: gameObject.
+        ].
+    ].
+]
 
     printCurrentRoom [
-        | neighbors count itemsInRoom|
         Transcript show: 'You are in ', currentRoom getName; cr.
         Texts printLines: currentRoom getDescription.
         Transcript show: 'Rooms: '.
-        neighbors := currentRoom getNeighbors.
-        Texts printListinLine: neighbors.
+        Texts printListinLine: (currentRoom getNeighbors).
         Transcript show: 'Items: '.
-        itemsInRoom := currentRoom getItems.
-        Texts printListinLine: itemsInRoom.
+        Texts printListinLine: (currentRoom getItems).
+        Transcript show: 'Objects: '.
+        Texts printListinLine: (currentRoom getObjects).
     ]
 
 
@@ -166,7 +207,6 @@ Object subclass: Game [
         Texts printListinLine: holdingItems.
     ]
 
-
     readCommand [
         Transcript show: '> '.
         ^ FileStream stdin nextLine
@@ -190,6 +230,11 @@ Object subclass: Game [
             (cmd startsWith: 'pick up ') ifTrue: [
                 isUnknown := false.
                 self pickUp: (cmd allButFirst: 8).
+            ].
+
+            (cmd startsWith: 'use ') ifTrue: [
+                isUnknown := false.
+                self use: (cmd allButFirst: 4).
             ].
 
             cmd = 'look up inventory' ifTrue: [

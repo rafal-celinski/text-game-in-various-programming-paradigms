@@ -13,11 +13,11 @@ Object subclass: Item [
         ^ self.
     ]
 
-    use [
-        Transcript show: description; cr.
-    ]
-
     getName [
         ^name.
+    ]
+
+    getDescription [
+        ^description.
     ]
 ]

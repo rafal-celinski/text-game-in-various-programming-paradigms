@@ -37,7 +37,7 @@ Object subclass: Room [
     ]
 
     removeItem: anItem [
-        items remove: anItem ifAbsent: [Transcript show: 'Can`t do it.'; cr]
+        items remove: anItem
     ]
 
     setName: aName [
@@ -78,5 +78,9 @@ Object subclass: Room [
 
     getLockReason [
         ^lockReason
+    ]
+
+    getObjects [
+        ^objects
     ]
 ]

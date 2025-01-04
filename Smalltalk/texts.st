@@ -188,6 +188,11 @@ Object subclass: Texts [
         ^#('').
     ]
 
+    Texts class >> emptyDescription [
+        ^#('').
+    ]
+
+
     Texts class >> electricalLockReason [
         ^#('You try to open the door to the electrical room, but it doesn’t budge.'
         'A warning on the control panel reads: "Refuel both engines to stabilize power distribution."'
@@ -197,6 +202,15 @@ Object subclass: Texts [
 
     Texts class >> v2AccessCardLockReason [
         ^#('You need v2_access_card to access this room').
+    ]
+
+    Texts class >> v1_access_cardLockReason [
+        ^#('You need to use v1_access_card on admin panel before accessing it').
+    ]
+
+    Texts class >> scannerLockReason [
+        ^#('The medbay scanner sits dormant, its screen blank and unresponsive due to an electrical shortage.'
+           'Maybe checking electrical room will let you progress. If you recall corectly it was located near lower engines').
     ]
 
     Texts class >> navigationLockReason [
@@ -320,6 +334,130 @@ Texts class >> medicalReportDescription [
     ).
 ]
 
+Texts class >> cameraCafeteriaAndShields [
+    ^#(
+        'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
+        'In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'
+        '...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'
+        'The camera feed in the shields room shows another one of these impostors prowling near the shield generators, its form disturbingly familiar.'
+        'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
+        'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
+        'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
+    ).
+]
 
+Texts class >> cameraCafeteriaOnly [
+    ^#(
+        'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
+        'In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'
+        '...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'
+        'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
+        'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
+        'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
+    ).
+]
+
+Texts class >> cameraShieldsOnly [
+    ^#(
+        'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
+        'The camera feed in the shields room shows one of the aliens prowling near the shield generators, its form disturbingly familiar.'
+        'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
+        'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
+        'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
+    ).
+]
+
+Texts class >> cameraAllClear [
+    ^#(
+        'The camera feeds flicker to life, displaying a quiet stillness that has returned to the ship.'
+        'The cafeteria sits empty, tables undisturbed and lights humming softly.'
+        'A calm has settled over the corridors, where only the gentle pulsing of the ship’s systems remains.'
+        'For a moment, there’s a strange sense of peace... until a faint electric crackle disrupts the silence.'
+        'The screens flicker one last time, then slowly fade to black. Whatever happened here, it’s finally over.'
+    ).
+]
+
+Texts class >> cameraOffline [
+    ^#(
+        'You attempt to activate the cameras, but all the screens remain blank.'
+        'A faint hum of power is the only indication that the system is even operational.'
+        'Whatever caused the failure, it’s complete. The cameras are offline, leaving you in the dark.'
+    ).
+]
+
+Texts class >> useScannerDescription [
+    ^#(
+        'The medbay scanner sits dormant, its screen blank and unresponsive due to an electrical shortage.'
+        'Maybe checking electrical room will let you progress. If you recall correctly, it was located near lower engines.'
+    ).
+]
+
+Texts class >> usePowerBreakerDescription [
+    ^#(
+        'A sturdy power breaker is mounted on the wall, labeled "Medbay Power Supply."'
+        'It seems switched off, likely the cause of the scanner’s malfunction.'
+        'You try pulling the lever to restore power to the medbay.'
+        'It worked. Finally no sad surprises...'
+        'At least for now...'
+    ).
+]
+
+Texts class >> useGasEngineDescription [
+    ^#(
+        'The gas engine provides power for the entire ship.'
+    ).
+]
+
+Texts class >> usePetrolEngineDescription [
+    ^#(
+        'The petrol engine provides power for the entire ship.'
+    ).
+]
+
+Texts class >> useAdminPanelDescription [
+    ^#(
+        'The administrative panel displays alarming data: two crew members are deceased, while four survivors sit in the navigation room,'
+        'their stress levels visibly elevated. The emergency mode is active, and the crew''s health indicators flash red, signaling a critical situation.'
+        'The activity log shows their recent attempts at coordination.'
+    ).
+]
+
+Texts class >> usePipeDescription [
+    ^#(
+        'A sturdy metal pipe runs along the wall, but near one of the joints, a crack has started to leak oxygen in faint, rhythmic hisses.'
+        'The crack is surrounded by a series of loose bolts and fittings that hold the pipe’s sections together.'
+        'With a wrench, you might be able to tighten the joints and secure the connection enough to stop the leak temporarily.'
+    ).
+]
+
+Texts class >> useFlashlightOnAliensDescription [
+    ^#(
+        'You flick on the flashlight, pointing it directly at the alien figures before you.'
+        'The intense beam pierces through the darkness, and the creatures recoil, their hollow eyes blinking and limbs twitching in confusion.'
+        'They stagger back, momentarily stunned and disoriented by the powerful light.'
+        'It won’t hold them for long, but you have a chance to move or attack while they’re blinded.'
+    ).
+]
+
+Texts class >> useShotgunOnAliensDescription [
+    ^#(
+        'You raise the shotgun, heart pounding as you take aim at the alien figures.'
+        'With a deafening blast, the shotgun kicks against your shoulder, the recoil intense but satisfying.'
+        'The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.'
+        'Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings.'
+    ).
+]
+
+Texts class >> useMedicalReportOnAdminPanelDescription [
+    ^#(
+        'Your medical report flashes on the screen, confirming that you are indeed human.'
+        'As the information sinks in, a new message appears, offering a glimmer of hope.'
+        'In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.'
+        'As you obtain the higher-level access card, an alarm suddenly blares through the ship.'
+        '"Warning! Oxygen levels critical. Immediate repair needed to maintain safe breathing conditions."'
+        'The system message echoes ominously, sending a chill down your spine.'
+        'To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy...'
+    ).
+]
 
 ]
