@@ -40,6 +40,10 @@ Object subclass: Room [
         items remove: anItem
     ]
 
+    removeObject: anObject [
+        objects remove: anObject
+    ]
+
     setName: aName [
         name := aName
     ]

@@ -44,6 +44,16 @@ Object subclass: Texts [
         ''
     ).
 
+    endingText := #(
+        'As they gather in the navigation room, the crew exchanges weary but relieved glances.'
+        'One by one, they take turns recounting the harrowing events, voices hushed but tinged with disbelief and gratitude.'
+        'They lean in, nodding as each person speaks, sharing quick smiles and soft laughs that cut through the tension.'
+        'A faint warmth returns to their expressions, a camaraderie solidified by survival. They stand a little taller, knowing the danger is finally behind them.'
+        ''
+        'Their reaction means one more thing. Your journey with the game ends. Congratulations!'
+        'As developers we hope you enjoyed your time here. Have a good one!'
+    ).
+
     Texts class >> printListinLine: anArray [
         |count|
         count := 1.
@@ -67,6 +77,10 @@ Object subclass: Texts [
 
     Texts class >> printInstructions [
         self printLines: instructionsText.
+    ]
+
+    Texts class >> printEnding [
+        self printLines: endingText.
     ]
 
     Texts class >> reactorDescription [
@@ -156,6 +170,9 @@ Object subclass: Texts [
         ^#(
             'The navigation room is lined with monitors displaying star charts and coordinates, softly glowing in the dim light.'
             'This is the heart of the ship’s control, a designated safe point in times of emergency.'
+            'The remaining crew members look up as you enter, their eyes heavy with exhaustion but filled with relief.'
+            'They offer tired smiles, grateful that the ordeal is finally over, and a calm settles over the room as everyone regains a sense of safety.'
+            'You can talk to them using `talk`.'
         ).
     ]
 
@@ -169,7 +186,7 @@ Object subclass: Texts [
             ).
     ]
 
-    Texts class >> shieldsDescriptions [
+    Texts class >> shieldsDescription [
             ^#(
                 'Shield generators hum softly here, their power keeping the ship protected in space.'
                 'However, flickering lights suggest something isn’t working quite right.'
@@ -192,6 +209,14 @@ Object subclass: Texts [
         ^#('').
     ]
 
+    Texts class >> useFlashlightOnBlindedAliensDescriptions [
+        ^#('Don`t do that. The battery can die at any moment').
+    ]
+
+    Texts class >> useCorpsesDescription [
+        ^#('Spooky scary skeletons').
+    ]
+
 
     Texts class >> electricalLockReason [
         ^#('You try to open the door to the electrical room, but it doesn’t budge.'
@@ -202,6 +227,10 @@ Object subclass: Texts [
 
     Texts class >> v2AccessCardLockReason [
         ^#('You need v2_access_card to access this room').
+    ]
+
+    Texts class >> useBlindedAliensDescription [
+
     ]
 
     Texts class >> lockedAdminPanelDescription [
@@ -463,6 +492,10 @@ Object subclass: Texts [
         ).
     ]
 
+    Texts class >> repairedPipeDescription [
+        ^#('After your repairs, the pipe will serve well for a long time').
+    ]
+
     Texts class >> useFlashlightOnAliensDescription [
         ^#(
             'You flick on the flashlight, pointing it directly at the alien figures before you.'
@@ -478,6 +511,16 @@ Object subclass: Texts [
             'With a deafening blast, the shotgun kicks against your shoulder, the recoil intense but satisfying.'
             'The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.'
             'Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings.'
+        ).
+    ]
+
+    Texts class >> useShotgunOnBlindedAliensDescription [
+        ^#(
+            'You take advantage of the aliens’ confusion, raising the shotgun with steady hands.'
+            'The creatures, disoriented and staggering, barely react as you pull the trigger. The shotgun roars, filling the room with an explosive sound.'
+            'The blinded aliens crumple, their strange, distorted forms dropping heavily to the ground, helpless under the onslaught.'
+            'As they fall, their true forms begin to seep through the disguise – grotesque, sinewy masses twisted into shapes that vaguely hint at something once living.'
+            'All that remains are eerie, unnatural corpses scattered on the floor, a disturbing testament to their failed mimicry of the crew.'
         ).
     ]
 

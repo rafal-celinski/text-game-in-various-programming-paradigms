@@ -1,15 +1,16 @@
 Object subclass: GameObject [
-    | name description isLocked room|
+    | name description isLocked |
 
-    GameObject class >> newGameObject: aName room: aRoom description: aDescription isLocked: anLockStatus [
+    GameObject class >> newGameObject: aName description: aDescription isLocked: anLockStatus [
     ^self new
         setName: aName;
-        setRoom: aRoom;
         setDescription: aDescription;
         setIsLocked: anLockStatus.
     ]
 
-
+    setName: aName [
+        name := aName.
+    ]
     setDescription: aDescription [
         description := aDescription.
     ]
@@ -18,13 +19,6 @@ Object subclass: GameObject [
         isLocked := anLockStatus.
     ]
 
-    setName: aName [
-        name := aName. 
-    ]
-
-    setRoom: aRoom [
-        room := aRoom.
-    ]
 
     getDescription [
         ^description
@@ -32,10 +26,6 @@ Object subclass: GameObject [
 
     getName [
         ^name
-    ]
-
-    getRoom [
-        ^room
     ]
 
     getIsLocked [

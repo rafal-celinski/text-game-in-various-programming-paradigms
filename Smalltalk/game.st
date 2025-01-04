@@ -167,6 +167,8 @@ Object subclass: Game [
             ('aliens' 'Cafeteria' #emptyDescription false)
             ('admin panel' 'Admin Room' #lockedAdminPanelDescription true)
             ('pipe' 'Oxygen' #usePipeDescription false)
+            ('blinded aliens' '' #emptyDescription false)
+            ('corpses' '' #useCorpsesDescription false)
     ).
 
     objectsData do: [:objectData |
@@ -174,14 +176,13 @@ Object subclass: Game [
         spawnRoom := (self getRoomByName: (objectData at: 2)).
         descriptionMethodName := objectData at: 3.
         isLockedStatus := objectData at: 4.
-        spawnRoom ifNotNil: [
-            gameObject := GameObject newGameObject: objectName
-                room: spawnRoom
+        gameObject := GameObject newGameObject: objectName
                 description: (Texts perform: descriptionMethodName)
                 isLocked: isLockedStatus.
+        spawnRoom ifNotNil: [
             spawnRoom addObject: gameObject.
-            objects add: gameObject.
         ].
+        objects add: gameObject.
     ].
 ]
 
@@ -296,7 +297,6 @@ Object subclass: Game [
                 ].
             ].
 
-
             cmd = 'look up inventory' ifTrue: [
                 isUnknown := false.
                 self listInventory.
@@ -316,6 +316,13 @@ Object subclass: Game [
                 isUnknown := false.
                 Texts printInstructions.
             ].
+
+            (cmd = 'talk' and: [currentRoom getName = 'Navigation']) ifTrue: [
+                isUnknown := false.
+                isGameOver := true.
+                Texts printEnding.
+            ].
+
                 
             isUnknown ifTrue: [
                 Texts printLines: #('Unknown command.' '').
@@ -342,12 +349,107 @@ setupActions [
             at: { nil. 'power breaker' } put: [self usePowerBreaker];
             at: { nil. 'scanner'} put: [self useScanner];
             at: { nil. 'admin panel' } put: [self useAdminPanel];
+            at: { nil. 'pipe'} put: [self usePipe];
+            at: { nil. 'corpses'} put: [self useCorpses];
             at: { 'gas canister'. 'gas engine' } put: [self useGasCanisterOnGasEngine];
             at: { 'petrol canister'. 'petrol engine' } put: [self usePetrolCanisterOnPetrolEngine];
             at: { 'v1 access card'. 'admin panel'} put: [self useV1AccessCardOnAdminPanel];
             at: { 'v2 access card'. 'admin panel'} put: [self useV1AccessCardOnAdminPanel];
-            at: { 'medical report'. 'admin panel'} put: [self useMedicalReportOnAdminPanel].
+            at: { 'medical report'. 'admin panel'} put: [self useMedicalReportOnAdminPanel];
+            at: { 'shotgun'. 'aliens'} put: [self useShotgunOnAliens];
+            at: { 'shotgun'. 'blinded aliens'} put: [self useShotgunOnBlindedAliens];
+            at: { 'flashlight'. 'aliens'} put: [self useFlashlightOnAliens];
+            at: { 'flashlight'. 'blinded aliens'} put: [self useFlashlightOnBlindedAliens];
+            at: { 'wrench'. 'pipe'} put: [self useWrenchOnPipe].
     ]
+
+useWrenchOnPipe [
+    |pipe|
+    pipe := pipe := (self getObjectFromCurrentRoomByName: 'pipe').
+    pipe setDescription: Texts repairedPipeDescription.
+    milestones add: 'pipe'.
+    Texts printLines: pipe getDescription.
+    self unlockNavigation.
+]
+
+usePipe [
+    |pipe|
+    pipe := (self getObjectFromCurrentRoomByName: 'pipe').
+    Texts printLines: pipe getDescription.
+]
+
+useCorpses [
+    Texts printLines: Texts useCorpsesDescription.
+]
+
+useShotgunOnAliens [
+    | roomName aliens corpses |
+    roomName := currentRoom getName.
+    aliens := (self getObjectFromCurrentRoomByName: 'aliens').
+    corpses := (self getObjectByName: 'corpses').
+
+    currentRoom removeObject: aliens.
+    currentRoom addObject: corpses.
+
+    roomName = 'Cafeteria' ifTrue: [
+        currentRoom setDescription: Texts cafeteriaDescription.
+        milestones add: 'aliens cafeteria'.
+    ].
+    roomName = 'Shields' ifTrue: [
+        currentRoom setDescription: Texts shieldsDescription.
+        milestones add: 'aliens shields'.
+    ].
+
+    Texts printLines: Texts useShotgunOnAliensDescription.
+    self unlockNavigation.
+]
+
+
+useShotgunOnBlindedAliens [
+    | roomName blindedAliens corpses |
+    roomName := currentRoom getName.
+    blindedAliens := (self getObjectFromCurrentRoomByName: 'blinded aliens').
+    corpses := (self getObjectByName: 'corpses').
+
+    currentRoom removeObject: blindedAliens.
+    currentRoom addObject: corpses.
+    
+    roomName = 'Cafeteria' ifTrue: [
+        currentRoom setDescription: Texts cafeteriaDescription.
+        milestones add: 'aliens cafeteria'.
+    ].
+    roomName = 'Shields' ifTrue: [
+        currentRoom setDescription: Texts shieldsDescription.
+        milestones add: 'aliens shields'.
+    ].
+
+    Texts printLines: Texts useShotgunOnBlindedAliensDescription.
+    self unlockNavigation.
+]
+
+
+useFlashlightOnAliens [
+    |roomName aliens blindedAliens|
+    
+    aliens := (self getObjectFromCurrentRoomByName: 'aliens').
+    blindedAliens := (self getObjectByName: 'blinded aliens').
+
+    currentRoom removeObject: aliens.
+    currentRoom addObject: blindedAliens.
+    Texts printLines: Texts useFlashlightOnAliensDescription.
+]
+
+useFlashlightOnBlindedAliens [
+    Texts printLines: Texts useFlashlightOnBlindedAliensDescriptions.
+]
+
+unlockNavigation [
+    |navigation|
+    (((milestones includes: 'aliens cafeteria') and: [milestones includes: 'aliens shields']) and: [milestones includes: 'pipe']) ifTrue: [
+        navigation := (self getRoomByName: 'Navigation').
+        navigation setIsLocked: false.
+    ].
+]
 
 useAdminPanel [
         |adminPanel|
