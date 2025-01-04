@@ -1,5 +1,5 @@
 Object subclass: Game [
-    | isGameOver rooms items objects currentRoom roomData itemsData objectsData holdingItems actionMap milestones|
+    | isGameOver rooms items objects currentRoom roomData itemsData objectsData holdingItems actionMap milestones lastRoom|
 
     Game class >> new [
         | g |
@@ -199,13 +199,20 @@ Object subclass: Game [
 
 
     move: roomName [
-        | nextRoom |
+        | nextRoom blindedAliens aliens|
         nextRoom := currentRoom getNeighbors detect: [:room | (room getName) = roomName] ifNone: [nil].
         nextRoom ifNotNil: [
             nextRoom isRoomLocked ifTrue: [
                 Texts printLines: nextRoom getLockReason.
                 ^self
             ].
+            blindedAliens := (self getObjectFromCurrentRoomByName: 'blinded aliens').
+            blindedAliens ifNotNil: [
+                aliens := (self getObjectByName: 'aliens').
+                currentRoom removeObject: blindedAliens.
+                currentRoom addObject: aliens.
+            ].
+            lastRoom := currentRoom.
             currentRoom := nextRoom.
             self printCurrentRoom.
             ^self
@@ -257,7 +264,7 @@ Object subclass: Game [
         ] ifFalse: [
             Transcript show: 'Invalid item and object specified.'; cr.
         ].
-]
+    ]
 
     readCommand [
         Transcript show: '> '.
@@ -265,7 +272,7 @@ Object subclass: Game [
     ]
 
     run [
-        | cmd isUnknown commandParts item object|
+        | cmd isUnknown commandParts item object aliensPresent |
         Texts printPlot.
         Texts printInstructions.
         self printCurrentRoom.
@@ -274,14 +281,28 @@ Object subclass: Game [
             isUnknown := true.
             cmd := self readCommand.
 
-            (cmd startsWith: 'go to ') ifTrue: [
-                isUnknown := false.
-                self move: (cmd allButFirst: 6).
-            ].
+            aliensPresent := (self getObjectFromCurrentRoomByName: 'aliens') notNil.
 
-            (cmd startsWith: 'pick up ') ifTrue: [
-                isUnknown := false.
-                self pickUp: (cmd allButFirst: 8).
+            aliensPresent ifTrue: [
+                cmd = 'run' ifTrue: [
+                    isUnknown := false.
+                    self move: lastRoom getName.
+                ].
+            ] ifFalse: [
+                (cmd startsWith: 'go to ') ifTrue: [
+                    isUnknown := false.
+                    self move: (cmd allButFirst: 6).
+                ].
+
+                (cmd startsWith: 'pick up ') ifTrue: [
+                    isUnknown := false.
+                    self pickUp: (cmd allButFirst: 8).
+                ].
+
+                cmd = 'look around' ifTrue: [
+                    isUnknown := false.
+                    self printCurrentRoom.
+                ].
             ].
 
             (cmd startsWith: 'use ') ifTrue: [
@@ -302,11 +323,6 @@ Object subclass: Game [
                 self listInventory.
             ].
 
-            cmd = 'look around' ifTrue: [
-                isUnknown := false.
-                self printCurrentRoom.
-            ].
-
             cmd = 'quit' ifTrue: [
                 isGameOver := true.
                 isUnknown := false.
@@ -323,12 +339,12 @@ Object subclass: Game [
                 Texts printEnding.
             ].
 
-                
             isUnknown ifTrue: [
                 Texts printLines: #('Unknown command.' '').
             ].
         ].
     ]
+
 
 performActionWith: anItem on: anObject [
     | actionKey actionBlock |
