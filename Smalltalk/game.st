@@ -54,6 +54,12 @@ Object subclass: Game [
         ^object
     ]
 
+    getObjectByName: objectName [
+        |object|
+        object := objects detect: [:i | i getName = objectName] ifNone: [nil].
+        ^object
+    ]
+ 
    setupRooms [
     | roomName neighbors descriptionMethodName isLocked lockReasonMethodName description lockReason room |
     "single room data format"
@@ -178,10 +184,6 @@ Object subclass: Game [
         ].
     ].
 ]
-
-
-    
-
 
     printCurrentRoom [
         Transcript show: 'You are in ', currentRoom getName; cr.
@@ -337,6 +339,8 @@ setupActions [
             at: { nil. 'cameras' } put: [ self useCameras ];
             at: { nil. 'gas engine' } put: [self useGasEngine];
             at: { nil. 'petrol engine' } put: [self usePetrolEngine];
+            at: { nil. 'power breaker' } put: [self usePowerBreaker];
+            at: { nil. 'scanner'} put: [self useScanner];
             at: { 'gas canister'. 'gas engine' } put: [self useGasCanisterOnGasEngine];
             at: { 'petrol canister'. 'petrol engine' } put: [self usePetrolCanisterOnPetrolEngine].
     ]
@@ -399,6 +403,41 @@ unlockElectrical [
             electrical setIsLocked: false.
             Texts printLines: Texts unlockElectricalDescription. 
         ].
+]
+
+usePowerBreaker [
+        |powerBreaker scanner|
+        powerBreaker := (self getObjectFromCurrentRoomByName: 'power breaker').
+        (milestones includes: 'power breaker') ifFalse: [   
+            scanner := (self getObjectByName: 'scanner').
+
+            Texts printLines: powerBreaker getDescription.
+
+            milestones add: 'power breaker'.
+            scanner setIsLocked: false.
+            scanner setDescription: Texts unlockedScanner.
+            powerBreaker setDescription: Texts usedPowerBreakerDescription.
+        ] ifTrue: [
+            Texts printLines: powerBreaker getDescription.
+        ].
+]
+
+useScanner [
+        |scanner medicalReport|
+        scanner := (self getObjectByName: 'scanner').
+        (scanner getIsLocked) ifTrue: [
+            Texts printLines: scanner getDescription.
+            ^self
+        ].
+        (milestones includes: 'scanner') ifFalse: [
+            medicalReport := (self getItemByName: 'medical report').
+            Texts printLines: scanner getDescription.
+            milestones add: 'scanner'.
+            holdingItems add: medicalReport.
+            scanner setDescription: Texts usedScannerDescription.
+    ] ifTrue: [
+        Texts printLines: scanner getDescription.
+    ]
 ]
 
 ]

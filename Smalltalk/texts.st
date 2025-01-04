@@ -224,264 +224,286 @@ Object subclass: Texts [
         'It seems to cover a wide variety of topics, though much of it looks outdated.'
         'Perhaps some of the information could still prove useful.'
     ).
-]
+    ]
 
-Texts class >> flashlightDescription [
+    Texts class >> flashlightDescription [
     ^#(
         'A sturdy flashlight with a slightly scratched lens.'
         'It flickers occasionally, but it still casts a bright beam.'
         'This could be invaluable in the darker parts of the ship.'
     ).
-]
+    ]
 
-Texts class >> wrenchDescription [
-    ^#(
-        'A heavy-duty wrench, its surface marred with grease and scratches.'
-        'It looks like it could tighten bolts—or fend off an unwelcome threat.'
-    ).
-]
+    Texts class >> unlockedScanner [
+        ^#('You have aquired medical report. Go to admin room with v1_access card to upgrade it.').
+    ]
 
-Texts class >> plushieDescription [
-    ^#(
-        'A small, soft plushie that resembles a cartoon character.'
-        'It’s a bit worn but still exudes a sense of comfort and nostalgia.'
-        'Why was this left behind?'
-    ).
-]
+    Texts class >> wrenchDescription [
+        ^#(
+            'A heavy-duty wrench, its surface marred with grease and scratches.'
+            'It looks like it could tighten bolts—or fend off an unwelcome threat.'
+        ).
+    ]
 
-Texts class >> emptyCanisterDescription [
-    ^#(
-        'An empty metal canister, its interior spotless.'
-        'It might be used to transport something, but right now it’s useless.'
-    ).
-]
+    Texts class >> plushieDescription [
+        ^#(
+            'A small, soft plushie that resembles a cartoon character.'
+            'It’s a bit worn but still exudes a sense of comfort and nostalgia.'
+            'Why was this left behind?'
+        ).
+    ]
 
-Texts class >> pokemonCardDescription [
-    ^#(
-        'A rare collectible card featuring a powerful Pokémon.'
-        'Its edges are slightly bent, but the artwork is pristine.'
-        'Someone must have treasured this dearly.'
-    ).
-]
+    Texts class >> emptyCanisterDescription [
+        ^#(
+            'An empty metal canister, its interior spotless.'
+            'It might be used to transport something, but right now it’s useless.'
+        ).
+    ]
 
-Texts class >> petrolCanisterDescription [
-    ^#(
-        'A sturdy canister filled with petrol, its weight evident when lifted.'
-        'The smell of fuel wafts faintly from the seal.'
-        'It’s clearly meant for use in the ship’s engines.'
-    ).
-]
+    Texts class >> pokemonCardDescription [
+        ^#(
+            'A rare collectible card featuring a powerful Pokémon.'
+            'Its edges are slightly bent, but the artwork is pristine.'
+            'Someone must have treasured this dearly.'
+        ).
+    ]
 
-Texts class >> gasCanisterDescription [
-    ^#(
-        'A pressurized gas canister with warning labels plastered across its surface.'
-        'The contents could be dangerous if mishandled.'
-        'It must serve some specific purpose aboard the ship.'
-    ).
-]
+    Texts class >> petrolCanisterDescription [
+        ^#(
+            'A sturdy canister filled with petrol, its weight evident when lifted.'
+            'The smell of fuel wafts faintly from the seal.'
+            'It’s clearly meant for use in the ship’s engines.'
+        ).
+    ]
 
-Texts class >> ropeDescription [
-    ^#(
-        'A coil of strong, durable rope.'
-        'It looks like it’s been used before, but it remains sturdy and reliable.'
-        'This could come in handy for securing or climbing.'
-    ).
-]
+    Texts class >> gasCanisterDescription [
+        ^#(
+            'A pressurized gas canister with warning labels plastered across its surface.'
+            'The contents could be dangerous if mishandled.'
+            'It must serve some specific purpose aboard the ship.'
+        ).
+    ]
 
-Texts class >> cartonDescription [
-    ^#(
-        'A simple cardboard carton, slightly crushed on one side.'
-        'It’s empty now, but it could potentially hold something useful.'
-    ).
-]
+    Texts class >> ropeDescription [
+        ^#(
+            'A coil of strong, durable rope.'
+            'It looks like it’s been used before, but it remains sturdy and reliable.'
+            'This could come in handy for securing or climbing.'
+        ).
+    ]
 
-Texts class >> lightbulbsDescription [
-    ^#(
-        'A small box of replacement lightbulbs, carefully packed to prevent breakage.'
-        'These could brighten the darkest corners of the ship.'
-    ).
-]
+    Texts class >> cartonDescription [
+        ^#(
+            'A simple cardboard carton, slightly crushed on one side.'
+            'It’s empty now, but it could potentially hold something useful.'
+        ).
+    ]
 
-Texts class >> shotgunDescription [
-    ^#(
-        'A powerful shotgun with a polished barrel and a faint scent of gunpowder.'
-        'It feels solid in your hands, ready to defend against any threat.'
-        'This is a weapon of last resort.'
-    ).
-]
+    Texts class >> lightbulbsDescription [
+        ^#(
+            'A small box of replacement lightbulbs, carefully packed to prevent breakage.'
+            'These could brighten the darkest corners of the ship.'
+        ).
+    ]
 
-Texts class >> v1AccessCardDescription [
-    ^#(
-        'A sleek plastic card marked "V1 Access".'
-        'It looks like it’s used for accessing restricted areas of the ship.'
-        'Without it, some doors will remain firmly shut.'
-    ).
-]
+    Texts class >> shotgunDescription [
+        ^#(
+            'A powerful shotgun with a polished barrel and a faint scent of gunpowder.'
+            'It feels solid in your hands, ready to defend against any threat.'
+            'This is a weapon of last resort.'
+        ).
+    ]
 
-Texts class >> v2AccessCardDescription [
-    ^#(
-        'An advanced security card marked "V2 Access".'
-        'It’s pristine and clearly intended for high-level clearance.'
-        'Few doors aboard the ship could resist this key.'
-    ).
-]
+    Texts class >> v1AccessCardDescription [
+        ^#(
+            'A sleek plastic card marked "V1 Access".'
+            'It looks like it’s used for accessing restricted areas of the ship.'
+            'Without it, some doors will remain firmly shut.'
+        ).
+    ]
 
-Texts class >> medicalReportDescription [
-    ^#(
-        'A detailed medical report, filled with diagrams and data entries.'
-        'It chronicles the health of a crew member, but the name has been redacted.'
-        'The implications of the data might be unsettling.'
-    ).
-]
+    Texts class >> v2AccessCardDescription [
+        ^#(
+            'An advanced security card marked "V2 Access".'
+            'It’s pristine and clearly intended for high-level clearance.'
+            'Few doors aboard the ship could resist this key.'
+        ).
+    ]
 
-Texts class >> cameraCafeteriaAndShields [
-    ^#(
-        'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
-        'In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'
-        '...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'
-        'The camera feed in the shields room shows another one of these impostors prowling near the shield generators, its form disturbingly familiar.'
-        'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
-        'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
-        'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
-    ).
-]
+    Texts class >> medicalReportDescription [
+        ^#(
+            'A detailed medical report, filled with diagrams and data entries.'
+            'It chronicles the health of a crew member, but the name has been redacted.'
+            'The implications of the data might be unsettling.'
+        ).
+    ]
 
-Texts class >> cameraCafeteriaOnly [
-    ^#(
-        'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
-        'In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'
-        '...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'
-        'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
-        'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
-        'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
-    ).
-]
+    Texts class >> cameraCafeteriaAndShields [
+        ^#(
+            'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
+            'In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'
+            '...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'
+            'The camera feed in the shields room shows another one of these impostors prowling near the shield generators, its form disturbingly familiar.'
+            'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
+            'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
+            'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
+        ).
+    ]
 
-Texts class >> cameraShieldsOnly [
-    ^#(
-        'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
-        'The camera feed in the shields room shows one of the aliens prowling near the shield generators, its form disturbingly familiar.'
-        'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
-        'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
-        'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
-    ).
-]
+    Texts class >> cameraCafeteriaOnly [
+        ^#(
+            'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
+            'In the cafeteria, you catch a glimpse of several figures moving between the tables. At first, they look like your crewmates...'
+            '...until you notice the unnatural, jerky way they move. The aliens have taken on the appearance of the fallen crew.'
+            'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
+            'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
+            'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
+        ).
+    ]
 
-Texts class >> cameraAllClear [
-    ^#(
-        'The camera feeds flicker to life, displaying a quiet stillness that has returned to the ship.'
-        'The cafeteria sits empty, tables undisturbed and lights humming softly.'
-        'A calm has settled over the corridors, where only the gentle pulsing of the ship’s systems remains.'
-        'For a moment, there’s a strange sense of peace... until a faint electric crackle disrupts the silence.'
-        'The screens flicker one last time, then slowly fade to black. Whatever happened here, it’s finally over.'
-    ).
-]
+    Texts class >> cameraShieldsOnly [
+        ^#(
+            'You scan the camera feeds one by one. Some screens flicker with static, showing nothing but interference.'
+            'The camera feed in the shields room shows one of the aliens prowling near the shield generators, its form disturbingly familiar.'
+            'Suddenly, a loud electric crackle fills the room, and the monitor screens flicker violently.'
+            'The image distorts as arcs of electricity surge through the system, and one by one, the cameras go dark.'
+            'In the heavy silence that follows, you’re left with only your imagination to fill the gaps. The ship feels more dangerous than ever.'
+        ).
+    ]
 
-Texts class >> cameraOffline [
-    ^#(
-        'You attempt to activate the cameras, but all the screens remain blank.'
-        'A faint hum of power is the only indication that the system is even operational.'
-        'Whatever caused the failure, it’s complete. The cameras are offline, leaving you in the dark.'
-    ).
-]
+    Texts class >> cameraAllClear [
+        ^#(
+            'The camera feeds flicker to life, displaying a quiet stillness that has returned to the ship.'
+            'The cafeteria sits empty, tables undisturbed and lights humming softly.'
+            'A calm has settled over the corridors, where only the gentle pulsing of the ship’s systems remains.'
+            'For a moment, there’s a strange sense of peace... until a faint electric crackle disrupts the silence.'
+            'The screens flicker one last time, then slowly fade to black. Whatever happened here, it’s finally over.'
+        ).
+    ]
 
-Texts class >> useScannerDescription [
-    ^#(
-        'The medbay scanner sits dormant, its screen blank and unresponsive due to an electrical shortage.'
-        'Maybe checking electrical room will let you progress. If you recall correctly, it was located near lower engines.'
-    ).
-]
+    Texts class >> cameraOffline [
+        ^#(
+            'You attempt to activate the cameras, but all the screens remain blank.'
+            'A faint hum of power is the only indication that the system is even operational.'
+            'Whatever caused the failure, it’s complete. The cameras are offline, leaving you in the dark.'
+        ).
+    ]
 
-Texts class >> usePowerBreakerDescription [
-    ^#(
-        'A sturdy power breaker is mounted on the wall, labeled "Medbay Power Supply."'
-        'It seems switched off, likely the cause of the scanner’s malfunction.'
-        'You try pulling the lever to restore power to the medbay.'
-        'It worked. Finally no sad surprises...'
-        'At least for now...'
-    ).
-]
+    Texts class >> useScannerDescription [
+        ^#(
+            'The medbay scanner sits dormant, its screen blank and unresponsive due to an electrical shortage.'
+            'Maybe checking electrical room will let you progress. If you recall correctly, it was located near lower engines.'
+        ).
+    ]
 
-Texts class >> useGasEngineDescription [
-    ^#(
-        'The gas engine provides power for the entire ship.'
-    ).
-]
+    Texts class >> usePowerBreakerDescription [
+        ^#(
+            'A sturdy power breaker is mounted on the wall, labeled "Medbay Power Supply."'
+            'It seems switched off, likely the cause of the scanner’s malfunction.'
+            'You try pulling the lever to restore power to the medbay.'
+            'It worked. Finally no sad surprises...'
+            'At least for now...'
+        ).
+    ]
 
-Texts class >> gasEngineAfterRefuelDescription [
-    ^#(
-        'The gas engine provides power for the entire ship. Now it`s refueld and you can hear it working clearly.'
-    ).
-]
+    Texts class >> usedPowerBreakerDescription [
+        ^#(
+            'Everything seems working fine. Power in medbay should be restored.'
+        ).
+    ]
 
-Texts class >> useGasCanisterOnGasEngineDescription [
-    ^#(
-        'You connect the gas canister to the right engine. The gauge stabilizes, indicating full fuel.'
-    ).
-]
+    Texts class >> usedScannerDescription [
+        ^#(
+            'Don''t waste time. You already did that.'
+        ).
+    ]
 
-Texts class >> usePetrolEngineDescription [
-    ^#(
-        'The petrol engine provides power for the entire ship.'
-    ).
-]
+    Texts class >> useGasEngineDescription [
+        ^#(
+            'The gas engine provides power for the entire ship.'
+        ).
+    ]
 
-Texts class >> useAdminPanelDescription [
-    ^#(
-        'The administrative panel displays alarming data: two crew members are deceased, while four survivors sit in the navigation room,'
-        'their stress levels visibly elevated. The emergency mode is active, and the crew''s health indicators flash red, signaling a critical situation.'
-        'The activity log shows their recent attempts at coordination.'
-    ).
-]
+    Texts class >> gasEngineAfterRefuelDescription [
+        ^#(
+            'The gas engine provides power for the entire ship. Now it`s refueld and you can hear it working clearly.'
+        ).
+    ]
 
-Texts class >> usePipeDescription [
-    ^#(
-        'A sturdy metal pipe runs along the wall, but near one of the joints, a crack has started to leak oxygen in faint, rhythmic hisses.'
-        'The crack is surrounded by a series of loose bolts and fittings that hold the pipe’s sections together.'
-        'With a wrench, you might be able to tighten the joints and secure the connection enough to stop the leak temporarily.'
-    ).
-]
+    Texts class >> useGasCanisterOnGasEngineDescription [
+        ^#(
+            'You connect the gas canister to the right engine. The gauge stabilizes, indicating full fuel.'
+        ).
+    ]
 
-Texts class >> useFlashlightOnAliensDescription [
-    ^#(
-        'You flick on the flashlight, pointing it directly at the alien figures before you.'
-        'The intense beam pierces through the darkness, and the creatures recoil, their hollow eyes blinking and limbs twitching in confusion.'
-        'They stagger back, momentarily stunned and disoriented by the powerful light.'
-        'It won’t hold them for long, but you have a chance to move or attack while they’re blinded.'
-    ).
-]
+    Texts class >> usePetrolEngineDescription [
+        ^#(
+            'The petrol engine provides power for the entire ship.'
+        ).
+    ]
 
-Texts class >> useShotgunOnAliensDescription [
-    ^#(
-        'You raise the shotgun, heart pounding as you take aim at the alien figures.'
-        'With a deafening blast, the shotgun kicks against your shoulder, the recoil intense but satisfying.'
-        'The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.'
-        'Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings.'
-    ).
-]
+    Texts class >> useAdminPanelDescription [
+        ^#(
+            'The administrative panel displays alarming data: two crew members are deceased, while four survivors sit in the navigation room,'
+            'their stress levels visibly elevated. The emergency mode is active, and the crew''s health indicators flash red, signaling a critical situation.'
+            'The activity log shows their recent attempts at coordination.'
+        ).
+    ]
 
-Texts class >> useMedicalReportOnAdminPanelDescription [
-    ^#(
-        'Your medical report flashes on the screen, confirming that you are indeed human.'
-        'As the information sinks in, a new message appears, offering a glimmer of hope.'
-        'In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.'
-        'As you obtain the higher-level access card, an alarm suddenly blares through the ship.'
-        '"Warning! Oxygen levels critical. Immediate repair needed to maintain safe breathing conditions."'
-        'The system message echoes ominously, sending a chill down your spine.'
-        'To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy...'
-    ).
-]
+    Texts class >> usePipeDescription [
+        ^#(
+            'A sturdy metal pipe runs along the wall, but near one of the joints, a crack has started to leak oxygen in faint, rhythmic hisses.'
+            'The crack is surrounded by a series of loose bolts and fittings that hold the pipe’s sections together.'
+            'With a wrench, you might be able to tighten the joints and secure the connection enough to stop the leak temporarily.'
+        ).
+    ]
 
-Texts class >> unlockElectricalDescription [
-    ^#('You managed to unlock Electrical').
-]
+    Texts class >> useFlashlightOnAliensDescription [
+        ^#(
+            'You flick on the flashlight, pointing it directly at the alien figures before you.'
+            'The intense beam pierces through the darkness, and the creatures recoil, their hollow eyes blinking and limbs twitching in confusion.'
+            'They stagger back, momentarily stunned and disoriented by the powerful light.'
+            'It won’t hold them for long, but you have a chance to move or attack while they’re blinded.'
+        ).
+    ]
 
-Texts class >> petrolEngineAfterRefuelDescription [
-    ^#('The petrol engine provides power for the entire ship. After refuelling you can feel the engine`s vibrations').
-]
+    Texts class >> useShotgunOnAliensDescription [
+        ^#(
+            'You raise the shotgun, heart pounding as you take aim at the alien figures.'
+            'With a deafening blast, the shotgun kicks against your shoulder, the recoil intense but satisfying.'
+            'The alien creatures stagger, their hollow eyes widening just before they collapse in twisted, unnatural heaps on the floor.'
+            'Their forms begin to dissolve, revealing something even stranger beneath – twisted, sinewy masses that vaguely resemble what once might have been living beings.'
+        ).
+    ]
 
-Texts class >> usePetrolCanisterOnPetrolEngineDescription [
-    ^#('You carefully pour the petrol into the left engine. The fuel gauge rises to full!').
-]
+    Texts class >> useMedicalReportOnAdminPanelDescription [
+        ^#(
+            'Your medical report flashes on the screen, confirming that you are indeed human.'
+            'As the information sinks in, a new message appears, offering a glimmer of hope.'
+            'In case of emergency, you are granted a higher-level access card, allowing you to unlock more secure areas of the ship.'
+            'As you obtain the higher-level access card, an alarm suddenly blares through the ship.'
+            '"Warning! Oxygen levels critical. Immediate repair needed to maintain safe breathing conditions."'
+            'The system message echoes ominously, sending a chill down your spine.'
+            'To reach the oxygen installations, you will need to pass through storage and shields. The path won’t be easy...'
+        ).
+    ]
+
+    Texts class >> unlockElectricalDescription [
+        ^#(
+            'You managed to unlock Electrical'
+        ).
+    ]
+
+    Texts class >> petrolEngineAfterRefuelDescription [
+        ^#(
+            'The petrol engine provides power for the entire ship. After refuelling you can feel the engine`s vibrations'
+        ).
+    ]
+
+    Texts class >> usePetrolCanisterOnPetrolEngineDescription [
+        ^#(
+            'You carefully pour the petrol into the left engine. The fuel gauge rises to full!'
+        ).
+    ]
 
 ]
