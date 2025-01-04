@@ -1,18 +1,35 @@
 Object subclass: Room [
-    | name description neighbors isLocked lockReason items|
+    | name description neighbours isLocked lockReason items objects|
 
-    Room class >> newRoom: aName description: aDescription neighbors: aDictionary isLocked: aLockState lockReason: aReason [
+    Room class >> newRoom: aName description: aDescription isLocked: aLockState lockReason: aReason [
         ^self new
             setName: aName;
             setDescription: aDescription;
-            setNeighbors: aDictionary;
             setIsLocked: aLockState;
             setLockReason: aReason;
-            initializeItems
+            initializeItems;
+            initializeObjects;
+            initializeNeighbours.
+    ]
+
+    initializeObjects [
+        objects := OrderedCollection new.
     ]
 
     initializeItems [
         items := OrderedCollection new.
+    ]
+
+    initializeNeighbours [
+        neighbours := OrderedCollection new.
+    ]
+
+    addNeighbour: aNeighbour [
+        neighbours add: aNeighbour
+    ]
+
+    addObject: anObject [
+        objects add: anObject
     ]
 
     addItem: aItem [
@@ -29,10 +46,6 @@ Object subclass: Room [
 
     setDescription: aDescription [
         description := aDescription
-    ]
-
-    setNeighbors: aDictionary [
-        neighbors := aDictionary
     ]
 
     setIsLocked: aLockState [
@@ -56,7 +69,7 @@ Object subclass: Room [
     ]
 
     getNeighbors [
-        ^neighbors
+        ^neighbours
     ]
 
     isRoomLocked [

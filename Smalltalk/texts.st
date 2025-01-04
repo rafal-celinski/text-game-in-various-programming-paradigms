@@ -193,5 +193,122 @@ Object subclass: Texts [
         'Don''t forget about v2_access_card. Without it system won''t let you in.')
     ]
 
+    Texts class >> encyclopediaDescription [
+    ^#(
+        'A thick, well-worn encyclopedia filled with pages of knowledge.'
+        'It seems to cover a wide variety of topics, though much of it looks outdated.'
+        'Perhaps some of the information could still prove useful.'
+    ).
+]
+
+Texts class >> flashlightDescription [
+    ^#(
+        'A sturdy flashlight with a slightly scratched lens.'
+        'It flickers occasionally, but it still casts a bright beam.'
+        'This could be invaluable in the darker parts of the ship.'
+    ).
+]
+
+Texts class >> wrenchDescription [
+    ^#(
+        'A heavy-duty wrench, its surface marred with grease and scratches.'
+        'It looks like it could tighten bolts—or fend off an unwelcome threat.'
+    ).
+]
+
+Texts class >> plushieDescription [
+    ^#(
+        'A small, soft plushie that resembles a cartoon character.'
+        'It’s a bit worn but still exudes a sense of comfort and nostalgia.'
+        'Why was this left behind?'
+    ).
+]
+
+Texts class >> emptyCanisterDescription [
+    ^#(
+        'An empty metal canister, its interior spotless.'
+        'It might be used to transport something, but right now it’s useless.'
+    ).
+]
+
+Texts class >> pokemonCardDescription [
+    ^#(
+        'A rare collectible card featuring a powerful Pokémon.'
+        'Its edges are slightly bent, but the artwork is pristine.'
+        'Someone must have treasured this dearly.'
+    ).
+]
+
+Texts class >> petrolCanisterDescription [
+    ^#(
+        'A sturdy canister filled with petrol, its weight evident when lifted.'
+        'The smell of fuel wafts faintly from the seal.'
+        'It’s clearly meant for use in the ship’s engines.'
+    ).
+]
+
+Texts class >> gasCanisterDescription [
+    ^#(
+        'A pressurized gas canister with warning labels plastered across its surface.'
+        'The contents could be dangerous if mishandled.'
+        'It must serve some specific purpose aboard the ship.'
+    ).
+]
+
+Texts class >> ropeDescription [
+    ^#(
+        'A coil of strong, durable rope.'
+        'It looks like it’s been used before, but it remains sturdy and reliable.'
+        'This could come in handy for securing or climbing.'
+    ).
+]
+
+Texts class >> cartonDescription [
+    ^#(
+        'A simple cardboard carton, slightly crushed on one side.'
+        'It’s empty now, but it could potentially hold something useful.'
+    ).
+]
+
+Texts class >> lightbulbsDescription [
+    ^#(
+        'A small box of replacement lightbulbs, carefully packed to prevent breakage.'
+        'These could brighten the darkest corners of the ship.'
+    ).
+]
+
+Texts class >> shotgunDescription [
+    ^#(
+        'A powerful shotgun with a polished barrel and a faint scent of gunpowder.'
+        'It feels solid in your hands, ready to defend against any threat.'
+        'This is a weapon of last resort.'
+    ).
+]
+
+Texts class >> v1AccessCardDescription [
+    ^#(
+        'A sleek plastic card marked "V1 Access".'
+        'It looks like it’s used for accessing restricted areas of the ship.'
+        'Without it, some doors will remain firmly shut.'
+    ).
+]
+
+Texts class >> v2AccessCardDescription [
+    ^#(
+        'An advanced security card marked "V2 Access".'
+        'It’s pristine and clearly intended for high-level clearance.'
+        'Few doors aboard the ship could resist this key.'
+    ).
+]
+
+Texts class >> medicalReportDescription [
+    ^#(
+        'A detailed medical report, filled with diagrams and data entries.'
+        'It chronicles the health of a crew member, but the name has been redacted.'
+        'The implications of the data might be unsettling.'
+    ).
+]
+
+
 
 ]

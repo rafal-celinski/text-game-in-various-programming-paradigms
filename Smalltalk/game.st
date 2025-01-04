@@ -1,5 +1,5 @@
 Object subclass: Game [
-    | isGameOver rooms currentRoom roomData|
+    | isGameOver rooms items currentRoom roomData itemsData|
 
     Game class >> new [
         | g |
@@ -10,9 +10,18 @@ Object subclass: Game [
 
     init [
         isGameOver := false.
+        items := OrderedCollection new.
         rooms := OrderedCollection new.
         self setupRooms.
+        self setupItems.
         currentRoom := (rooms copyFrom: 1 to: 6) atRandom.
+    ]
+
+    getRoomByName: roomName [
+        |room|
+        room := rooms detect: [:r | r getName = roomName] ifNone: [nil].
+        ^room
+
     ]
 
    setupRooms [
@@ -35,30 +44,96 @@ Object subclass: Game [
 
     roomData do: [:roomInfo |
         roomName := roomInfo at: 1.
-        neighbors := roomInfo at: 2.
         descriptionMethodName := roomInfo at: 3.
         isLocked := roomInfo at: 4.
         lockReasonMethodName := roomInfo at: 5.
 
         room := Room newRoom: roomName
             description: (Texts perform: descriptionMethodName)
-            neighbors: neighbors
             isLocked: isLocked
             lockReason: (Texts perform: lockReasonMethodName).
         rooms add: room.
     ].
+
+    self setupNeighbours: roomData.
+]
+
+    setupNeighbours: aRoomData [
+    aRoomData do: [:roomInfo |
+        | roomName neighbors room neighborRoom |
+        roomName := roomInfo at: 1.
+        neighbors := roomInfo at: 2.
+        room := self getRoomByName: roomName.
+        room ifNotNil: [
+            neighbors do: [:neighborName |
+                neighborRoom := self getRoomByName: neighborName.
+                neighborRoom ifNotNil: [
+                    room addNeighbour: neighborRoom.
+                ].
+            ].
+        ].
+    ].
 ]
 
 
+    setupItems [
+        | itemName descriptionMethodName item chosenRoomName chosenRoom description roomNames validRoomsNames|
+        itemsData := #(
+            ('encyclopedia' #('Reactor' 'Security' 'Medbay' 'Lower Engine' 'Storage' 'Upper Engine') #encyclopediaDescription)
+            ('flashlight' #('Reactor' 'Security' 'Medbay' 'Lower Engine' 'Storage' 'Upper Engine') #flashlightDescription)
+            ('wrench' #('Electrical') #wrenchDescription)
+            ('plushie' #('Storage') #plushieDescription)
+            ('empty canister' #('Storage') #emptyCanisterDescription)
+            ('pokemon card' #('Storage') #pokemonCardDescription)
+            ('petrol canister' #('Reactor' 'Lower Engine' 'Storage' 'Upper Engine') #petrolCanisterDescription)
+            ('gas canister' #('Reactor' 'Lower Engine' 'Storage' 'Upper Engine') #gasCanisterDescription)
+            ('rope' #('Storage') #ropeDescription)
+            ('carton' #('Storage') #cartonDescription)
+            ('lightbulbs' #('Storage') #lightbulbsDescription)
+            ('shotgun' #('Weapons') #shotgunDescription)
+            ('v1 access card' #('Reactor' 'Security' 'Medbay' 'Lower Engine' 'Storage' 'Upper Engine') #v1AccessCardDescription)
+            ('v2 access card' #() #v2AccessCardDescription)
+            ('medical report' #() #medicalReportDescription)
+        ).
+
+        itemsData do: [:itemData |
+            itemName := itemData at: 1.
+            validRoomsNames := itemData at: 2.
+            descriptionMethodName := itemData at: 3.
+            item := Item newItem: itemName 
+                        description: (Texts perform: descriptionMethodName).
+            items add: item.
+            validRoomsNames isEmpty ifFalse: [
+                chosenRoomName := validRoomsNames atRandom.
+                chosenRoom := self getRoomByName: chosenRoomName.
+                chosenRoom ifNotNil: [
+                    chosenRoom addItem: item.
+                ].
+            ].
+        ].
+    ]
+
+
     printCurrentRoom [
-        | neighbors count |
+        | neighbors count itemsInRoom|
         Texts printLines: currentRoom getDescription.
         Transcript show: 'Rooms: '.
         neighbors := currentRoom getNeighbors.
         count := 1.
         neighbors do: [:neighbor |
-            Transcript show: neighbor.
+            Transcript show: (neighbor getName).
             (count < neighbors size) ifTrue: [
+                Transcript show: ', '.
+            ].
+            count := count + 1.
+        ].
+        Transcript cr.
+        Transcript show: 'Items: '.
+        itemsInRoom := currentRoom getItems.
+        count := 1.
+        itemsInRoom do: [:item |
+            Transcript show: (item getName).
+            (count <itemsInRoom size) ifTrue: [
                 Transcript show: ', '.
             ].
             count := count + 1.
@@ -66,23 +141,23 @@ Object subclass: Game [
         Transcript cr.
     ]
 
+
+
     move: roomName [
-        | nextRoom nextRoomName |
-        nextRoomName := (currentRoom getNeighbors detect: [:neighbor | neighbor = roomName] ifNone: [nil]).
-        nextRoomName ifNil: [
-            Transcript show: 'You cannot go that way.'; cr.
+        | nextRoom |
+        nextRoom := rooms detect: [:room | (room getName) = roomName] ifNone: [nil].
+        nextRoom ifNotNil: [
+            nextRoom isRoomLocked ifTrue: [
+                Texts printLines: nextRoom getLockReason.
+                ^self
+            ].
+            currentRoom := nextRoom.
+            self printCurrentRoom.
             ^self
         ].
-        nextRoom := rooms detect: [:room | room getName = nextRoomName] ifNone: [nil].
-        nextRoom isRoomLocked ifTrue: [
-            Texts printLines: nextRoom getLockReason.
-            ^self
-        ].
-        currentRoom := nextRoom.
-        self printCurrentRoom.
+        Transcript show: 'Unknown room'; cr.
     ]
 
-    
 
     readCommand [
         Transcript show: '> '.
